@@ -26,7 +26,6 @@ resource "hcloud_server" "coolify" {
 
 }
 
-
 resource "hcloud_server" "postgres_db" {
   count       = var.instances_db
   name        = "postgres-${count.index}"
@@ -93,4 +92,19 @@ resource "hcloud_server" "backup" {
   depends_on = [
     hcloud_network_subnet.resource_subnet
   ]  
+}
+
+resource "hcloud_volume" "backup_volume" {
+  count    = var.instances_backup
+  name     = "backup-volume-${count.index}"
+  size     = var.disk_size
+  location = var.backup_location
+  format   = "xfs"
+}
+
+resource "hcloud_volume_attachment" "backup_vol_attachment" {
+  count     = var.instances_backup
+  volume_id = hcloud_volume.backup_volume[count.index].id
+  server_id = hcloud_server.backup[count.index].id
+  automount = true
 }

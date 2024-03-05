@@ -26,7 +26,7 @@ variable "backup_location" {
 variable "instances_coolify" {
   type        = string
   description = "Number of instances to create"
-  default     = "2"
+  default     = "5"
 }
 
 variable "instances_db" {
@@ -44,7 +44,7 @@ variable "instances_utils" {
 variable "instances_backup" {
   type        = string
   description = "Number of instances to create"
-  default     = "1"
+  default     = "2"
 }
 
 variable "server_type_coolify" {
@@ -77,10 +77,26 @@ variable "os_type" {
   default     = "debian-12"
 }
 
+variable "disk_size" {
+  type        = string
+  description = "Disk size to use for the backup server"
+  default     = "60"
+}
+
+# variable "volume_count" {
+#   type        = string
+#   description = "Number of volumes to create for the backup server"
+#   default     = "2"
+# }
+
 variable "http_protocol" {
-  default = "http"
+  type        = string
+  description = "Load balancer protocol"
+  default     = "http"
 }
 
 variable "http_port" {
-  default = "80"
+  type        = string
+  description = "Load balancer port"
+  default     = "80"
 }

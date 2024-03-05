@@ -68,7 +68,7 @@ resource "hcloud_load_balancer_target" "load_balancer_target" {
 resource "hcloud_load_balancer_network" "deployment_network" {
   load_balancer_id        = hcloud_load_balancer.deployment_lb.id
   subnet_id               = hcloud_network_subnet.deployment_subnet.id
-  ip                      = cidrhost(hcloud_network_subnet.deployment_subnet.ip_range, -1)
+  ip                      = cidrhost(hcloud_network_subnet.deployment_subnet.ip_range, 244)
   enable_public_interface = "true"
 }
 
