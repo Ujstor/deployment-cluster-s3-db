@@ -17,16 +17,10 @@ variable "location" {
   default     = "fsn1"
 }
 
-variable "backup_location" {
-  type        = string
-  description = "Location to create the server's in"
-  default     = "hel1"
-}
-
 variable "instances_coolify" {
   type        = string
   description = "Number of instances to create"
-  default     = "5"
+  default     = "2"
 }
 
 variable "instances_db" {
@@ -44,7 +38,7 @@ variable "instances_utils" {
 variable "instances_backup" {
   type        = string
   description = "Number of instances to create"
-  default     = "2"
+  default     = "1"
 }
 
 variable "server_type_coolify" {
@@ -82,12 +76,6 @@ variable "disk_size" {
   description = "Disk size to use for the backup server"
   default     = "60"
 }
-
-# variable "volume_count" {
-#   type        = string
-#   description = "Number of volumes to create for the backup server"
-#   default     = "2"
-# }
 
 variable "http_protocol" {
   type        = string
