@@ -5,10 +5,22 @@ variable "hcloud_token" {
   default     = "<API_TOKEN>"
 }
 
+variable "location_list" {
+  type        = list(string)
+  description = "List of locations to cycle through"
+  default     = ["fsn1", "nbg1", "hel1"]
+}
+
 variable "location" {
   type        = string
   description = "Location to create the server's in"
   default     = "fsn1"
+}
+
+variable "backup_location" {
+  type        = string
+  description = "Location to create the server's in"
+  default     = "hel1"
 }
 
 variable "instances_coolify" {

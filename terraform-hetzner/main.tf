@@ -1,9 +1,13 @@
+locals {
+  calculate_location = [for idx in range(var.instances_coolify) : var.location_list[idx % length(var.location_list)]]
+}
+
 resource "hcloud_server" "coolify" {
   count       = var.instances_coolify
   name        = "coolify-${count.index}"
   image       = var.os_type
   server_type = var.server_type_coolify
-  location    = var.location
+  location    = local.calculate_location[count.index]
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
     type = "coolify"
@@ -74,7 +78,7 @@ resource "hcloud_server" "backup" {
   name        = "backup-${count.index}"
   image       = var.os_type
   server_type = var.server_type_backup
-  location    = var.location
+  location    = var.backup_location
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
     type = "backup"

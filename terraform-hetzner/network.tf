@@ -1,3 +1,8 @@
+locals {
+  available_ip_resource = [for num in range(2, 254) : cidrhost(hcloud_network_subnet.resource_subnet.ip_range, num)]
+  available_ip_deploymet = [for num in range(2, 254) : cidrhost(hcloud_network_subnet.deployment_subnet.ip_range, num)]
+}
+
 resource "hcloud_network" "network" {
   name     = "network"
   ip_range = "10.0.0.0/16"
@@ -15,7 +20,7 @@ resource "hcloud_server_network" "deployment_subnet" {
   count     = var.instances_coolify
   server_id = hcloud_server.coolify[count.index].id
   subnet_id = hcloud_network_subnet.deployment_subnet.id
-  ip        = cidrhost(hcloud_network_subnet.deployment_subnet.ip_range, count.index + 3)
+  ip        = local.available_ip_deploymet[count.index]
 }
 
 resource "hcloud_load_balancer" "deployment_lb" {
@@ -32,7 +37,7 @@ resource "hcloud_load_balancer" "deployment_lb" {
 
   depends_on = [
     hcloud_network_subnet.deployment_subnet
-  ]  
+  ]
 }
 
 resource "hcloud_load_balancer_service" "deployment_lb_service" {
@@ -62,8 +67,8 @@ resource "hcloud_load_balancer_target" "load_balancer_target" {
 
 resource "hcloud_load_balancer_network" "deployment_network" {
   load_balancer_id        = hcloud_load_balancer.deployment_lb.id
-  subnet_id = hcloud_network_subnet.deployment_subnet.id
-  ip        = cidrhost(hcloud_network_subnet.deployment_subnet.ip_range, count.index + 3)
+  subnet_id               = hcloud_network_subnet.deployment_subnet.id
+  ip                      = cidrhost(hcloud_network_subnet.deployment_subnet.ip_range, -1)
   enable_public_interface = "true"
 }
 
@@ -80,19 +85,19 @@ resource "hcloud_server_network" "db_subnet" {
   count     = var.instances_db
   server_id = hcloud_server.postgres_db[count.index].id
   subnet_id = hcloud_network_subnet.resource_subnet.id
-  ip        = cidrhost(hcloud_network_subnet.resource_subnet.ip_range, count.index + 3)
+  ip        = local.available_ip_resource[count.index]
 }
 
 resource "hcloud_server_network" "utils_subnet" {
   count     = var.instances_utils
   server_id = hcloud_server.utils[count.index].id
   subnet_id = hcloud_network_subnet.resource_subnet.id
-  ip        = cidrhost(hcloud_network_subnet.resource_subnet.ip_range, count.index + 6)
+  ip        = local.available_ip_resource[count.index + var.instances_db]
 }
 
 resource "hcloud_server_network" "backup_subnet" {
   count     = var.instances_backup
   server_id = hcloud_server.backup[count.index].id
   subnet_id = hcloud_network_subnet.resource_subnet.id
-  ip        = cidrhost(hcloud_network_subnet.resource_subnet.ip_range, count.index + 9)
+  ip        = local.available_ip_resource[count.index + var.instances_db + var.instances_utils]
 }
