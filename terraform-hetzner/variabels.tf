@@ -11,7 +11,7 @@ variable "location" {
   default     = "fsn1"
 }
 
-variable "instances_coolfy" {
+variable "instances_coolify" {
   type        = string
   description = "Number of instances to create"
   default     = "2"
@@ -63,4 +63,12 @@ variable "os_type" {
   type        = string
   description = "OS image to use for the server"
   default     = "debian-12"
+}
+
+variable "http_protocol" {
+  default = "http"
+}
+
+variable "http_port" {
+  default = "80"
 }

@@ -1,5 +1,5 @@
 resource "hcloud_server" "coolify" {
-  count       = var.instances_coolfy
+  count       = var.instances_coolify
   name        = "coolify-${count.index}"
   image       = var.os_type
   server_type = var.server_type_coolify
@@ -15,11 +15,17 @@ resource "hcloud_server" "coolify" {
       chmod 600 ~/.ssh/hetzner_key.pem
     EOT
   }
+
+  depends_on = [
+    hcloud_network_subnet.deployment_subnet
+  ]  
+
 }
+
 
 resource "hcloud_server" "postgres_db" {
   count       = var.instances_db
-  name        = "postgres_db"
+  name        = "postgres-${count.index}"
   image       = var.os_type
   server_type = var.server_type_db
   location    = var.location
@@ -34,6 +40,10 @@ resource "hcloud_server" "postgres_db" {
       chmod 600 ~/.ssh/hetzner_key.pem
     EOT
   }
+
+  depends_on = [
+    hcloud_network_subnet.resource_subnet
+  ]  
 }
 
 
@@ -54,11 +64,14 @@ resource "hcloud_server" "utils" {
       chmod 600 ~/.ssh/hetzner_key.pem
     EOT
   }
+  depends_on = [
+    hcloud_network_subnet.resource_subnet
+  ]  
 }
 
 resource "hcloud_server" "backup" {
   count       = var.instances_backup
-  name        = "backup"
+  name        = "backup-${count.index}"
   image       = var.os_type
   server_type = var.server_type_backup
   location    = var.location
@@ -73,4 +86,7 @@ resource "hcloud_server" "backup" {
       chmod 600 ~/.ssh/hetzner_key.pem
     EOT
   }
+  depends_on = [
+    hcloud_network_subnet.resource_subnet
+  ]  
 }
