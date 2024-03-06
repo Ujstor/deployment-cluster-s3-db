@@ -33,5 +33,10 @@ output "server_status" {
 }
 
 output "lb_ip" {
-    value  = hcloud_load_balancer.deployment_lb.ipv4
-  }
+  value = hcloud_load_balancer.deployment_lb.ipv4
+}
+
+output "public_key" {
+  value = tls_private_key.ssh_key.public_key_openssh
+}
+

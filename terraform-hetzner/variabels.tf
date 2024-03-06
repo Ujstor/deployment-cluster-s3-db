@@ -68,7 +68,7 @@ variable "server_type_backup" {
 variable "os_type" {
   type        = string
   description = "OS image to use for the server"
-  default     = "debian-12"
+  default     = "ubuntu-22.04"
 }
 
 variable "disk_size" {

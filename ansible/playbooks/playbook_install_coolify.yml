@@ -1,0 +1,18 @@
+---
+- import_playbook: ../common/auth_key_files.yml
+- import_playbook: ../common/update_upgrade.yml
+- import_playbook: ../common/ufw_ssh.yml
+- import_playbook: ../coolify/ufw.yml
+
+- hosts: coolify-master
+  become: yes
+  become_user: root
+  tasks:
+    - name: Download Coolify installation script
+      get_url:
+        url: "https://cdn.coollabs.io/coolify/install.sh"
+        dest: "/tmp/install.sh"
+        mode: "0644"
+
+    - name: Execute Coolify installation script
+      command: "bash /tmp/install.sh"

@@ -1,0 +1,16 @@
+hcloud_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+location_list = ["fsn1", "nbg1", "hel1"]
+location = "fsn1"
+instances_coolify = "2"
+instances_db = "0"
+instances_utils = "0"
+instances_backup = "0"
+server_type_coolify = "cx21"
+server_type_db = "cx41"
+server_type_utils = "cx21"
+server_type_backup = "cx31"
+os_type = "ubuntu-22.04"
+disk_size = "60"
+http_protocol = "http"
+http_port = "80"

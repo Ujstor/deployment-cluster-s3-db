@@ -17,6 +17,7 @@ resource "hcloud_server" "coolify" {
   provisioner "local-exec" {
     command = <<-EOT
       echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
+      echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
       chmod 600 ~/.ssh/hetzner_key.pem
     EOT
   }
@@ -38,13 +39,6 @@ resource "hcloud_server" "postgres_db" {
     type = "db"
   }
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-      chmod 600 ~/.ssh/hetzner_key.pem
-    EOT
-  }
-
   depends_on = [
     hcloud_network_subnet.resource_subnet
   ]  
@@ -62,12 +56,6 @@ resource "hcloud_server" "utils" {
     type = "utils"
   }
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-      chmod 600 ~/.ssh/hetzner_key.pem
-    EOT
-  }
   depends_on = [
     hcloud_network_subnet.resource_subnet
   ]  
@@ -84,12 +72,6 @@ resource "hcloud_server" "backup" {
     type = "backup"
   }
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-      chmod 600 ~/.ssh/hetzner_key.pem
-    EOT
-  }
   depends_on = [
     hcloud_network_subnet.resource_subnet
   ]  
