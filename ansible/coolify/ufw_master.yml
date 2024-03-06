@@ -1,5 +1,5 @@
 ---
-- hosts: coolify-nodes
+- hosts: coolify-master
   become: yes
   become_user: root
   tasks:

@@ -17,7 +17,13 @@ variable "location" {
   default     = "fsn1"
 }
 
-variable "instances_coolify" {
+variable "instances_coolify_master" {
+  type        = string
+  description = "Number of instances to create"
+  default     = "1"
+}
+
+variable "instances_coolify_node" {
   type        = string
   description = "Number of instances to create"
   default     = "2"
@@ -41,10 +47,16 @@ variable "instances_backup" {
   default     = "1"
 }
 
-variable "server_type_coolify" {
+variable "server_type_coolify_node" {
   type        = string
   description = "Server type to use for deployment"
   default     = "cx21"
+}
+
+variable "server_type_coolify_master" {
+  type        = string
+  description = "Server type to use for deployment master node"
+  default     = "cx11"
 }
 
 variable "server_type_db" {
@@ -74,7 +86,7 @@ variable "os_type" {
 variable "disk_size" {
   type        = string
   description = "Disk size to use for the backup server"
-  default     = "60"
+  default     = "100"
 }
 
 variable "http_protocol" {
@@ -87,4 +99,10 @@ variable "http_port" {
   type        = string
   description = "Load balancer port"
   default     = "80"
+}
+
+variable "public_net" {
+  type = bool
+  description = "Public network enabled or desabled for all servers besides master_node and backup"
+  default = true
 }

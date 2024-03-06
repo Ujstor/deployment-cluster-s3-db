@@ -17,8 +17,6 @@
         port: "{{ item }}"
       loop:
         - 22
-        - 80
-        - 443
 
     - name: Configure Fail2Ban
       template:

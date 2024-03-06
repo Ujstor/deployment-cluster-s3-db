@@ -1,32 +1,50 @@
 locals {
-  calculate_location = [for idx in range(var.instances_coolify) : var.location_list[idx % length(var.location_list)]]
+  calculate_location = [for idx in range(var.instances_coolify_node) : var.location_list[idx % length(var.location_list)]]
   calculate_location_backup = [for idx in range(var.instances_backup) : var.location_list[(length(var.location_list) - 1 - idx) % length(var.location_list)]]
 }
-
-resource "hcloud_server" "coolify" {
-  count       = var.instances_coolify
-  name        = "coolify-${count.index}"
+resource "hcloud_server" "coolify_master" {
+  count       = var.instances_coolify_master
+  name        = "coolify-master"
   image       = var.os_type
-  server_type = var.server_type_coolify
-  location    = local.calculate_location[count.index]
+  server_type = var.server_type_coolify_master
+  location    = var.location
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
-    type = "coolify"
+    type = "coolify-master"
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
-      echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-      echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
-      chmod 600 ~/.ssh/hetzner_key.pem
-    EOT
+   command = <<-EOT
+     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
+     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
+     chmod 600 ~/.ssh/hetzner_key.pem
+   EOT
+  }
+  depends_on = [
+    hcloud_network_subnet.deployment_subnet
+  ]  
+}
+
+resource "hcloud_server" "coolify_node" {
+  count       = var.instances_coolify_node
+  name        = "coolify-node-${count.index}"
+  image       = var.os_type
+  server_type = var.server_type_coolify_node
+  location    = local.calculate_location[count.index]
+  ssh_keys    = [hcloud_ssh_key.default.id]
+  labels = {
+    type = "coolify-node"
+  }
+  public_net {
+    ipv4_enabled = var.public_net
+    ipv6_enabled = var.public_net
   }
 
   depends_on = [
     hcloud_network_subnet.deployment_subnet
   ]  
-
 }
+
 
 resource "hcloud_server" "postgres_db" {
   count       = var.instances_db
@@ -38,9 +56,13 @@ resource "hcloud_server" "postgres_db" {
   labels = {
     type = "db"
   }
+  public_net {
+    ipv4_enabled = var.public_net
+    ipv6_enabled = var.public_net
+  }
 
   depends_on = [
-    hcloud_network_subnet.resource_subnet
+    hcloud_network_subnet.db_backup_subnet
   ]  
 }
 
@@ -54,6 +76,10 @@ resource "hcloud_server" "utils" {
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
     type = "utils"
+  }
+  public_net {
+    ipv4_enabled = var.public_net
+    ipv6_enabled = var.public_net
   }
 
   depends_on = [
@@ -73,7 +99,7 @@ resource "hcloud_server" "backup" {
   }
 
   depends_on = [
-    hcloud_network_subnet.resource_subnet
+    hcloud_network_subnet.db_backup_subnet
   ]  
 }
 

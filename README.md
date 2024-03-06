@@ -1,6 +1,6 @@
 # HA Hetzner infrastructure
 
-![infra-diagram](public/01_infra_diagram.png)
+![infra-diagram](public/01_infra-diagram.png)
 
 ## Teraform
 ```bash

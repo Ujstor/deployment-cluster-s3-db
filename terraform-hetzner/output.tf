@@ -1,7 +1,10 @@
 output "server_ips" {
   value = {
-    coolify = {
-      for idx, instance in hcloud_server.coolify : instance.name => instance.ipv4_address
+    coolify_master = {
+      for idx, instance in hcloud_server.coolify_master : instance.name => instance.ipv4_address
+    },
+    coolify_node = {
+      for idx, instance in hcloud_server.coolify_node : instance.name => instance.ipv4_address
     },
     postgres_db = {
       for idx, instance in hcloud_server.postgres_db : instance.name => instance.ipv4_address
@@ -17,8 +20,11 @@ output "server_ips" {
 
 output "server_status" {
   value = {
-    coolify = {
-      for instance in hcloud_server.coolify : instance.name => instance.status
+    coolify_master = {
+      for instance in hcloud_server.coolify_master : instance.name => instance.status
+    },
+    coolify_node = {
+      for instance in hcloud_server.coolify_node : instance.name => instance.status
     },
     postgres_db = {
       for instance in hcloud_server.postgres_db : instance.name => instance.status
