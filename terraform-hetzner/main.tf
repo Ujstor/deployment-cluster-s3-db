@@ -36,6 +36,8 @@ resource "hcloud_server" "coolify_node" {
     type = "coolify-node"
   }
   public_net {
+    # On default public ip is enabled, after server provisioning with ansible
+    # and lb setup changes public ip to false in vari.tfvars
     ipv4_enabled = var.public_net
     ipv6_enabled = var.public_net
   }

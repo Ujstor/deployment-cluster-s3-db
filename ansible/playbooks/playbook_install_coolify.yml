@@ -1,9 +1,6 @@
 ---
-- import_playbook: ../common/auth_key_files.yml
-- import_playbook: ../common/update_upgrade.yml
-- import_playbook: ../common/ufw_ssh.yml
-- import_playbook: ../coolify/ufw_master.yml
-- import_playbook: ../coolify/ufw_node.yml
+- import_playbook: ../roles/coolify/task/ufw_master.yml
+- import_playbook: ../roles/coolify/task/ufw_node.yml
 
 - hosts: coolify-master
   become: yes

@@ -15,10 +15,9 @@ terraform apply -auto-approve
 ansible all -m ping
 ```
 
-[Posix](https://docs.ansible.com/ansible/latest/collections/ansible/posix/authorized_key_module.html)
+[Posix](https://docs.ansible.com/ansible/latest/collections/ansible/posix/authorized_key_module.html) module for Adds or removes an SSH authorized key
 
 ```bash
-#importing public key
 ansible-galaxy collection install ansible.posix
 ```
 

@@ -6,6 +6,9 @@ output "server_ips" {
     coolify_node = {
       for idx, instance in hcloud_server.coolify_node : instance.name => instance.ipv4_address
     },
+    traefik_lb = {
+      value = hcloud_server.traefik_lb.ipv4_address
+    },
     postgres_db = {
       for idx, instance in hcloud_server.postgres_db : instance.name => instance.ipv4_address
     },
@@ -38,9 +41,9 @@ output "server_status" {
   }
 }
 
-output "lb_ip" {
-  value = hcloud_load_balancer.deployment_lb.ipv4
-}
+# output "lb_ip" {
+#   value = hcloud_load_balancer.deployment_lb.ipv4
+# }
 
 output "public_key" {
   value = tls_private_key.ssh_key.public_key_openssh

@@ -1,0 +1,11 @@
+---
+- hosts: coolify-node
+  become: yes
+  become_user: root
+  tasks:
+    - name: Allow incoming traffic on specified ports node
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+      loop:
+        - 6001

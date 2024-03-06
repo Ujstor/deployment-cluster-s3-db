@@ -1,5 +1,5 @@
 ---
-- hosts: coolify-node
+- hosts: traefik-lb
   become: yes
   become_user: root
   tasks:
@@ -8,4 +8,5 @@
         rule: allow
         port: "{{ item }}"
       loop:
-        - 6001
+        - 80
+        - 443
