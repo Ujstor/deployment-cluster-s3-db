@@ -47,7 +47,6 @@ resource "hcloud_server" "coolify_node" {
   ]  
 }
 
-
 resource "hcloud_server" "postgres_db" {
   count       = var.instances_db
   name        = "postgres-${count.index}"

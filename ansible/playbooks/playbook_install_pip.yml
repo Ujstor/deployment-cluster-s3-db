@@ -1,0 +1,24 @@
+- hosts: db
+  become: yes
+  tasks:
+    - name: Install Python
+      apt:
+        name: python3
+        state: present
+
+    - name: Download get-pip.py script
+      get_url:
+        url: https://bootstrap.pypa.io/get-pip.py
+        dest: /tmp/get-pip.py
+
+    - name: Install pip using get-pip.py
+      command: python3 /tmp/get-pip.py
+      args:
+        creates: /usr/bin/pip3  
+
+    - name: Install psycopg2-binary
+      pip:
+        name: psycopg2-binary
+
+
+    

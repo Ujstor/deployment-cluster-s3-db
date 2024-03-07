@@ -1,0 +1,39 @@
+---
+- import_playbook: playbook_install_pip.yml
+
+- hosts: db
+  become: yes
+  vars:
+    postgresql_version: 16
+    postgresql_listen_addresses: "*"
+
+    postgresql_databases:
+      - name: blueprint
+        owner: ujstor
+        state: "present"      
+
+    postgresql_users:
+      - name: ujstor
+        pass: password1234
+        encrypted: yes
+        state: "present"
+
+    postgresql_database_schemas:
+      - database: blueprint
+        schema: ujstor-test
+        state: present
+
+    postgresql_user_privileges:
+      - name: ujstor
+        db: blueprint
+        role_attr_flags: "CREATEDB"
+
+  roles:
+    - role: common
+    - role: postgresql
+
+  tasks:
+    - name: Allow DB Port
+      community.general.ufw:
+        rule: allow
+        port: "5432"

@@ -20,6 +20,12 @@
   loop:
     - ufw
     - fail2ban
+  
+- name: Allow everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: allow
+
 
 - name: Allow incoming traffic on specified ports
   community.general.ufw:
