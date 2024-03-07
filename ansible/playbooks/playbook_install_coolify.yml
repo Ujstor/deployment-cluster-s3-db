@@ -1,11 +1,15 @@
 ---
-- import_playbook: ../roles/coolify/task/ufw_master.yml
-- import_playbook: ../roles/coolify/task/ufw_node.yml
-
 - hosts: coolify-master
   become: yes
   become_user: root
+  roles:
+    - role: coolify
   tasks:
+    - name: Allow incoming UI Port
+      community.general.ufw:
+        rule: allow
+        port: "8000"
+
     - name: Download Coolify installation script
       get_url:
         url: "https://cdn.coollabs.io/coolify/install.sh"
@@ -14,3 +18,9 @@
 
     - name: Execute Coolify installation script
       command: "bash /tmp/install.sh"
+
+- hosts: coolify-node
+  become: yes
+  become_user: root
+  roles:
+    - role: coolify

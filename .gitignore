@@ -39,3 +39,4 @@ terraform
 .terraform*
 
 docs/
+.vscode

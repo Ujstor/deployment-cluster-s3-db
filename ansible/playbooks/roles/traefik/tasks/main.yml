@@ -1,0 +1,8 @@
+---
+- name: Allow http/s ports
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop:
+    - 80
+    - 443

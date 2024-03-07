@@ -1,0 +1,7 @@
+---
+- name: Allow webhook port
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop:
+    - 6001 

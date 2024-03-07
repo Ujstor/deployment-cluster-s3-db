@@ -1,6 +1,7 @@
 hcloud_token = "<API_TOKEN>"
 location_list = ["fsn1", "nbg1", "hel1"]
 location = "fsn1"
+instances_lb = "1"
 instances_coolify_master = "1"
 instances_coolify_node = "2"
 instances_db = "1"

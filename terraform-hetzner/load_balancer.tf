@@ -52,7 +52,8 @@
 # Custom load balancer/uncomet: code above if you want to use a hetzner one
 # traefik offers more options
 resource "hcloud_server" "traefik_lb" {
-  name        = "traefik-lb"
+  count       = var.instances_lb
+  name        = "traefik-lb-${count.index}"
   image       = var.os_type
   server_type = var.server_type_coolify_master
   location    = var.location
@@ -67,7 +68,8 @@ resource "hcloud_server" "traefik_lb" {
 }
 
 resource "hcloud_server_network" "deployment_subnet_lb" {
-  server_id = hcloud_server.traefik_lb.id
-  subnet_id = hcloud_network_subnet.deployment_subnet.id 
-  ip        = "10.0.1.252"
+  count = var.instances_lb
+  server_id = hcloud_server.traefik_lb[count.index].id
+  subnet_id = hcloud_network_subnet.deployment_subnet.id
+  ip        = local.available_ip_deploymet[count.index + var.instances_coolify_node + var.instances_lb]
 }

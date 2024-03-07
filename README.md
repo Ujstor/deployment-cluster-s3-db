@@ -9,6 +9,18 @@ terraform validate
 terraform apply -auto-approve
 ```
 
+```bash
+terraform-hetzner/
+├── load_balancer.tf
+├── main.tf
+├── network.tf
+├── output.tf
+├── provider.tf
+├── ssh.tf
+├── terraform.tfstate
+├── terraform.tfstate.backup
+└── variables.tf
+```
 
 ## Ansible
 ```
@@ -37,23 +49,24 @@ ansible-playbook playbooks/playbook_install_coolify.yml
 
 ## Ansible project structure:
 ```bash
-ansible_project/
-├── roles/
-│   ├── common/
-│   │   ├── tasks/
-│   │   │   ├── main.yml
-│   │   │   └── update_upgrade.yml
-│   │   └── templates/
-│   │       └── jail.local.j2
-│   └── coolify/
-│       ├── tasks/
-│       │   └── main.yml
-│       └── files/
-│           └── install.sh
+ansible/
 ├── inventory/
 │   └── hosts
 ├── playbooks/
-│   ├── site.yml
-│   └── install_coolify.yml
-└── ansible.cfg
+│   ├── roles/
+│   │   ├── common/
+│   │   │   ├── tasks/
+│   │   │   │   └── main.yml
+│   │   │   └── templates/
+│   │   │       └── jail.local.j2
+│   │   ├── coolify/
+│   │   │   └── tasks/
+│   │   │       └── main.yml
+│   │   └── traefik/
+│   │       └── tasks/
+│   │           └── main.yml
+│   ├── playbook_init_server_config.yml
+│   └── playbook_install_coolify.yml
+├── ansible.cfg
+├── requirements.yml
 ```

@@ -17,6 +17,12 @@ variable "location" {
   default     = "fsn1"
 }
 
+variable "instances_lb" {
+  type        = string
+  description = "Number of instances to create"
+  default     = "1"
+}
+
 variable "instances_coolify_master" {
   type        = string
   description = "Number of instances to create"
