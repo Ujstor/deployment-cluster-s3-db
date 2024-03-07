@@ -58,19 +58,23 @@ ansible/
 │   ├── roles/
 │   │   ├── common/
 │   │   │   ├── tasks/
-│   │   │   │   └── main.yml
 │   │   │   └── templates/
-│   │   │       └── jail.local.j2
 │   │   ├── coolify/
 │   │   │   └── tasks/
-│   │   │       └── main.yml
+│   │   ├── postgresql/
+│   │   │   ├── defaults/
+│   │   │   ├── handlers/
+│   │   │   ├── meta/
+│   │   │   ├── tasks/
+│   │   │   ├── templates/
+│   │   │   └── vars/
 │   │   └── traefik/
 │   │       └── tasks/
-│   │           └── main.yml
-│   ├── playbook_init_server_config.yml
-│   └── playbook_install_coolify.yml
+│   ├── playbook_install_coolify.yml
+│   ├── playbook_install_pip.yml
+│   └── playbook_psql.yml
 ├── ansible.cfg
-├── requirements.yml
+└── requirements.yml
 ```
 
 ##  PostgreSQL
@@ -82,18 +86,6 @@ ansible-galaxy install anxs.postgresql
 ```
 
 #### Example Playbook
-
-An example how to include this role:
-
-```yml
----
-- hosts: postgresql-server
-  roles:
-    - role: postgresql
-      become: yes
-```
-
-An example how to include this role as a task:
 
 ```yml
 ---
@@ -122,7 +114,7 @@ hosts: db
     postgresql_user_privileges:
       - name: ujstor
         db: blueprint
-        role_attr_flags: "CREATEDB"
+        role_attr_flags: "SUPERUSER"
 
   roles:
     - role: common
@@ -190,4 +182,4 @@ postgresql_user_privileges:
     role_attr_flags: "CREATEDB" # role attribute flags
 ```
 
-There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)
+There's a lot more options to set, which you can find in the [defaults/main.yml](./defaults/main.yml)

@@ -1,6 +1,8 @@
 locals {
-  calculate_location = [for idx in range(var.instances_coolify_node) : var.location_list[idx % length(var.location_list)]]
-  calculate_location_backup = [for idx in range(var.instances_backup) : var.location_list[(length(var.location_list) - 1 - idx) % length(var.location_list)]]
+  calculate_location        = [for idx in range(var.instances_coolify_node) : var.location_list[idx % length(var.location_list)]]
+  calculate_location_backup = [for idx in range(var.instances_backup) : var.location_list[idx % length(var.location_list)]]
+
+
 }
 resource "hcloud_server" "coolify_master" {
   count       = var.instances_coolify_master
@@ -14,7 +16,7 @@ resource "hcloud_server" "coolify_master" {
   }
 
   provisioner "local-exec" {
-   command = <<-EOT
+    command = <<-EOT
      echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
      echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
      chmod 600 ~/.ssh/hetzner_key.pem
@@ -22,7 +24,7 @@ resource "hcloud_server" "coolify_master" {
   }
   depends_on = [
     hcloud_network_subnet.deployment_subnet
-  ]  
+  ]
 }
 
 resource "hcloud_server" "coolify_node" {
@@ -44,7 +46,7 @@ resource "hcloud_server" "coolify_node" {
 
   depends_on = [
     hcloud_network_subnet.deployment_subnet
-  ]  
+  ]
 }
 
 resource "hcloud_server" "postgres_db" {
@@ -64,9 +66,8 @@ resource "hcloud_server" "postgres_db" {
 
   depends_on = [
     hcloud_network_subnet.db_backup_subnet
-  ]  
+  ]
 }
-
 
 resource "hcloud_server" "utils" {
   count       = var.instances_utils
@@ -105,16 +106,24 @@ resource "hcloud_server" "backup" {
 }
 
 resource "hcloud_volume" "backup_volume" {
-  count    = var.instances_backup
+  count    = var.volumes_per_node * var.instances_backup
   name     = "backup-volume-${count.index}"
   size     = var.disk_size
-  location = local.calculate_location_backup[count.index]
+  location = local.calculate_location_backup[count.index % length(local.calculate_location_backup)]
   format   = "xfs"
+
+  depends_on = [
+    hcloud_server.backup
+  ]  
 }
 
 resource "hcloud_volume_attachment" "backup_vol_attachment" {
-  count     = var.instances_backup
+  count     = var.volumes_per_node * var.instances_backup
   volume_id = hcloud_volume.backup_volume[count.index].id
-  server_id = hcloud_server.backup[count.index].id
+  server_id = element([for s in hcloud_server.backup : s.id if s.location == hcloud_volume.backup_volume[count.index].location], 0)
   automount = true
+
+  depends_on = [
+    hcloud_server.backup
+  ]  
 }

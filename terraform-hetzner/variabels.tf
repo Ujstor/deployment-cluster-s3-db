@@ -101,6 +101,12 @@ variable "http_protocol" {
   default     = "http"
 }
 
+variable "volumes_per_node" {
+  type        = string
+  description = "Load balancer port"
+  default     = "1"
+}
+
 variable "http_port" {
   type        = string
   description = "Load balancer port"
