@@ -5,6 +5,7 @@ events {
 http {
     {% for domain in domains %}
     upstream backend_cluster_{{ domain.port }} {
+        least_conn;
         {% for server in backend_servers %}
         server {{ server }}:{{ domain.port }};
         {% endfor %}
