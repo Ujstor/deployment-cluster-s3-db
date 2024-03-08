@@ -1,12 +1,15 @@
-[traefik-lb]
+[nginx-lb]
+
+[nginx-minio-lb]
+91.107.208.20
 
 [coolify-master]
-49.13.73.339
+
 
 [coolify-node]
 
 [db]
-162.55.162.239
+
 
 [utils]
 

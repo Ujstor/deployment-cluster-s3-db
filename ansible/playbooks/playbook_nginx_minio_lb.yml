@@ -1,0 +1,62 @@
+---
+- import_playbook: unique_templates_config/playbook_dns_backup_lb.yml
+
+- name: Configure Nginx as Load Balancer for MinIO cluster
+  hosts: nginx-minio-lb
+  become: true
+  roles:
+    - role: common
+    
+  vars:
+    nginx_vhosts_items:
+      - http://mini1.hetzner.dev
+      - http://mini2.hetzner.dev
+      - http://mini3.hetzner.dev
+      - http://mini4.hetzner.dev
+    nginx_upstreams:
+      - name: hetzner_cluster
+        strategy: "least_conn"
+        servers:
+          - 192.168.1.101
+          - 192.168.1.102
+          - 192.168.1.103
+          - 192.168.1.104
+  tasks:
+    - name: Install Nginx
+      include_role:
+        name: nginx
+
+    - name: Create directory for vhost configurations
+      file:
+        path: "/etc/nginx/conf.d/"
+        state: directory
+
+    - name: Create Nginx vhost configurations
+      template:
+        src: "unique_templates_config/minio_lb/vhost.conf.j2"
+        dest: "/etc/nginx/conf.d/{{ item | regex_replace('[:/]', '_') }}.conf"
+      loop: "{{ nginx_vhosts_items }}"
+      vars:
+        domain: "{{ item | regex_replace('^http://', '') | regex_replace('^https://', '') | regex_replace('[:/]', '_') }}"
+      notify: Reload Nginx
+
+    - name: Create Nginx upstreams configuration
+      template:
+        src: "unique_templates_config/minio_lb/upstreams.conf.j2"
+        dest: "/etc/nginx/conf.d/upstreams.conf"
+      notify: Reload Nginx
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
+
+    - name: Allow http, UI and S3 API ports
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+      loop:
+        - 80
+        - 9000
+        - 9001

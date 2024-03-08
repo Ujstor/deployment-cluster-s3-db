@@ -1,5 +1,5 @@
 ---
-- import_playbook: playbook_install_pip.yml
+- import_playbook: unique_templates_config/playbook_install_pip.yml
 
 - hosts: db
   become: yes

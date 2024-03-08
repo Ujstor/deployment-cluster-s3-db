@@ -1,0 +1,22 @@
+---
+- name: Configure MinIO Custom DNS mappings
+  hosts: nginx-minio-lb, backup
+  become: yes
+  vars:
+    dns_mappings:
+      - hostname: "mini1.hetzner.dev"
+        ip_address: "192.168.1.101"
+      - hostname: "mini2.hetzner.dev"
+        ip_address: "192.168.1.102"
+      - hostname: "mini3.hetzner.dev"
+        ip_address: "192.168.1.103"
+      - hostname: "mini4.hetzner.dev"
+        ip_address: "192.168.1.103"
+
+  tasks:
+    - name: Configure DNS mappings
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item.ip_address }} {{ item.hostname }}"
+        state: present
+      loop: "{{ dns_mappings }}"

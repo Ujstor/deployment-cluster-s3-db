@@ -1,0 +1,8 @@
+{% for upstream in nginx_upstreams %}
+upstream {{ upstream.name }} {
+    {{ upstream.strategy }};
+    {% for server in upstream.servers %}
+    server {{ server }};
+    {% endfor %}
+}
+{% endfor %}

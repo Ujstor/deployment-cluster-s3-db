@@ -59,6 +59,15 @@ resource "hcloud_server" "postgres_db" {
   labels = {
     type = "db"
   }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
+     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
+     chmod 600 ~/.ssh/hetzner_key.pem
+   EOT
+  }
+
   public_net {
     ipv4_enabled = var.public_net
     ipv6_enabled = var.public_net
@@ -98,6 +107,14 @@ resource "hcloud_server" "backup" {
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
     type = "backup"
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
+     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
+     chmod 600 ~/.ssh/hetzner_key.pem
+   EOT
   }
 
   depends_on = [

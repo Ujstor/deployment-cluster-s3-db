@@ -23,6 +23,12 @@ variable "instances_lb" {
   default     = "1"
 }
 
+variable "instances_minio_lb" {
+  type        = string
+  description = "Number of instances to create"
+  default     = "1"
+}
+
 variable "instances_coolify_master" {
   type        = string
   description = "Number of instances to create"

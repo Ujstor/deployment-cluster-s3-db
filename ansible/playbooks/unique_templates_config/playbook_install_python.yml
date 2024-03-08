@@ -1,4 +1,4 @@
-- hosts: db
+- hosts: db, nginx-minio-lb
   become: yes
   tasks:
     - name: Install Python

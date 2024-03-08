@@ -40,3 +40,4 @@ terraform
 
 docs/
 .vscode
+stale.yml

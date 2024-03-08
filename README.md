@@ -3,6 +3,7 @@
 ![infra-diagram](public/01_infra-diagram.png)
 
 ## Teraform
+
 ```bash
 terraform init --upgrade
 terraform validate
@@ -23,6 +24,7 @@ terraform-hetzner/
 ```
 
 ## Ansible
+
 ```
 ansible all -m ping
 ```
@@ -35,13 +37,12 @@ ansible-galaxy collection install ansible.posix
 
 ```yml
 tasks:
-    - name: Install public AuthorizedKeysFile
-      ansible.posix.authorized_key:
-        user: root
-        state: present
-        key: "{{ lookup('file', '~/.ssh/hetzner_key.pub') }}"
+  - name: Install public AuthorizedKeysFile
+    ansible.posix.authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '~/.ssh/hetzner_key.pub') }}"
 ```
-
 
 ```bash
 ansible-playbook playbooks/playbook_install_coolify.yml
@@ -50,6 +51,7 @@ ansible-playbook your_playbook.yml --start-at-task="Ensure PostgreSQL users are 
 ```
 
 ## Ansible project structure:
+
 ```bash
 ansible/
 ├── inventory/
@@ -68,7 +70,7 @@ ansible/
 │   │   │   ├── tasks/
 │   │   │   ├── templates/
 │   │   │   └── vars/
-│   │   └── traefik/
+│   │   └── nginx/
 │   │       └── tasks/
 │   ├── playbook_install_coolify.yml
 │   ├── playbook_install_pip.yml
@@ -77,7 +79,7 @@ ansible/
 └── requirements.yml
 ```
 
-##  PostgreSQL
+## PostgreSQL
 
 To install:
 
@@ -98,7 +100,7 @@ hosts: db
     postgresql_databases:
       - name: blueprint
         owner: ujstor
-        state: "present"      
+        state: "present"
 
     postgresql_users:
       - name: ujstor
@@ -140,14 +142,14 @@ postgresql_cluster_reset: false
 # Note: for more flexibility with extensions use the postgresql_database_extensions setting.
 postgresql_databases:
   - name: foobar
-    owner: baz          # optional; specify the owner of the database
-    hstore: yes         # flag to install the hstore extension on this database (yes/no)
-    uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
-    citext: yes         # flag to install the citext extension on this database (yes/no)
-    encoding: "UTF-8"   # override global {{ postgresql_encoding }} variable per database
-    state: "present"    # optional; one of 'present', 'absent', 'dump', 'restore'
-    lc_collate: "en_GB.UTF-8"   # override global {{ postgresql_locale }} variable per database
-    lc_ctype: "en_GB.UTF-8"     # override global {{ postgresql_ctype }} variable per database
+    owner: baz # optional; specify the owner of the database
+    hstore: yes # flag to install the hstore extension on this database (yes/no)
+    uuid_ossp: yes # flag to install the uuid-ossp extension on this database (yes/no)
+    citext: yes # flag to install the citext extension on this database (yes/no)
+    encoding: "UTF-8" # override global {{ postgresql_encoding }} variable per database
+    state: "present" # optional; one of 'present', 'absent', 'dump', 'restore'
+    lc_collate: "en_GB.UTF-8" # override global {{ postgresql_locale }} variable per database
+    lc_ctype: "en_GB.UTF-8" # override global {{ postgresql_ctype }} variable per database
 
 # List of database extensions to be created (optional)
 postgresql_database_extensions:
@@ -160,25 +162,25 @@ postgresql_database_extensions:
 postgresql_users:
   - name: baz
     pass: pass
-    encrypted: yes  # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords
-    state: "present"    # optional; one of 'present', 'absent'
+    encrypted: yes # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords
+    state: "present" # optional; one of 'present', 'absent'
 
 # List of schemas to be created (optional)
 postgresql_database_schemas:
-  - database: foobar           # database name
-    schema: acme               # schema name
+  - database: foobar # database name
+    schema: acme # schema name
     state: present
 
-  - database: foobar           # database name
-    schema: acme_baz           # schema name
-    owner: baz                 # owner name
+  - database: foobar # database name
+    schema: acme_baz # schema name
+    owner: baz # owner name
     state: present
 
 # List of user privileges to be applied (optional)
 postgresql_user_privileges:
-  - name: baz                   # user name
-    db: foobar                  # database
-    priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
+  - name: baz # user name
+    db: foobar # database
+    priv: "ALL" # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
 ```
 
