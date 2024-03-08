@@ -62,6 +62,14 @@ resource "hcloud_server" "nginx_lb" {
     type = "nginx-lb"
   }
 
+  provisioner "local-exec" {
+    command = <<-EOT
+     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
+     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
+     chmod 600 ~/.ssh/hetzner_key.pem
+   EOT
+  }
+
   depends_on = [
     hcloud_network_subnet.deployment_subnet
   ]
@@ -100,8 +108,8 @@ resource "hcloud_server" "minio_lb" {
   ]
 }
 
-resource "hcloud_server_network" "deployment_subnet_miniio_lb" {
-  count     = var.instances_lb
+resource "hcloud_server_network" "deployment_subnet_minio_lb" {
+  count     = var.instances_minio_lb
   server_id = hcloud_server.minio_lb[count.index].id
   subnet_id = hcloud_network_subnet.db_backup_subnet.id
   ip        = local.available_ip_deploymet[count.index + var.instances_db + var.instances_minio_lb]

@@ -1,7 +1,7 @@
 [nginx-lb]
+91.107.208.20
 
 [nginx-minio-lb]
-91.107.208.20
 
 [coolify-master]
 

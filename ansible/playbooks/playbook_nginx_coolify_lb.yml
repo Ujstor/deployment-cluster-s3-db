@@ -1,0 +1,39 @@
+---
+- import_playbook: unique_templates_config/playbook_dns_backup_lb.yml
+
+- name: Configure NGINX Load Balancer
+  hosts: nginx-lb
+  become: true
+  # roles:
+  #   - role: common
+
+  tasks:
+    - name: Install NGINX
+      include_role:
+        name: nginx
+
+    - name: Create NGINX configuration directory
+      file:
+        path: /etc/nginx/conf.d
+        state: directory
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: Deploy NGINX configuration
+      template:
+        src: unique_templates_config/coolify_lb/nginx_coolify.conf.j2
+        dest: /etc/nginx/conf.d/load_balancer.conf
+      notify: Reload NGINX
+      vars:
+        backend_servers:
+          - 10.0.1.1
+          - 10.0.1.2
+          - 10.0.1.3
+          - 10.0.1.4
+
+  handlers:
+    - name: Reload NGINX
+      systemd:
+        name: nginx
+        state: reloaded

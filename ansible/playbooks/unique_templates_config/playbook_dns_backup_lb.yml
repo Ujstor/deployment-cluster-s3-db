@@ -1,6 +1,6 @@
 ---
 - name: Configure MinIO Custom DNS mappings
-  hosts: nginx-minio-lb, backup
+  hosts: all
   become: yes
   vars:
     dns_mappings:
