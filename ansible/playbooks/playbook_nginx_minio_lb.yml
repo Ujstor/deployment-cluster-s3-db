@@ -6,7 +6,7 @@
   become: true
   roles:
     - role: common
-    
+
   vars:
     nginx_vhosts_items:
       - http://mini1.hetzner.dev
@@ -38,12 +38,6 @@
       loop: "{{ nginx_vhosts_items }}"
       vars:
         domain: "{{ item | regex_replace('^http://', '') | regex_replace('^https://', '') | regex_replace('[:/]', '_') }}"
-      notify: Reload Nginx
-
-    - name: Create Nginx upstreams configuration
-      template:
-        src: "unique_templates_config/minio_lb/upstreams.conf.j2"
-        dest: "/etc/nginx/conf.d/upstreams.conf"
       notify: Reload Nginx
 
   handlers:
