@@ -104,7 +104,8 @@ resource "hcloud_server" "minio_lb" {
   }
 
   depends_on = [
-    hcloud_network_subnet.db_backup_subnet
+    hcloud_network_subnet.db_backup_subnet,
+    hcloud_server.backup
   ]
 }
 
@@ -112,5 +113,5 @@ resource "hcloud_server_network" "deployment_subnet_minio_lb" {
   count     = var.instances_minio_lb
   server_id = hcloud_server.minio_lb[count.index].id
   subnet_id = hcloud_network_subnet.db_backup_subnet.id
-  ip        = local.available_ip_deploymet[count.index + var.instances_db + var.instances_minio_lb]
+  ip        = local.available_ip_dbbackup[count.index + var.instances_db + var.instances_minio_lb + 10]
 }

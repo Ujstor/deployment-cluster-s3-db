@@ -1,5 +1,5 @@
 ---
-- import_playbook: unique_templates_config/playbook_dns_backup_lb.yml
+# - import_playbook: unique_templates_config/playbook_dns_backup_lb.yml
 
 - name: Configure NGINX Load Balancer
   hosts: nginx-lb
@@ -9,22 +9,29 @@
 
   vars:
     backend_servers:
-      - 10.0.1.1
       - 10.0.1.2
       - 10.0.1.3
       - 10.0.1.4
+      - 10.0.1.5
     domains:
-      - name: domain1.net
+      - name: example1.dev
         port: 4000
-      - name: domain2.net
-        port: 5000
-      - name: xyz.domain
-        port: 8080
+      - name: example2.dev
+        port: 5000 
+      - name: example3.dev
+        port: 6000 
+      - name: example4.dev
+        port: 7000 
 
   tasks:
     - name: Install NGINX
       include_role:
         name: nginx
+
+    - name: Check if conf.d directory exists
+      stat:
+        path: /etc/nginx/conf.d
+      register: dir_check
       
     - name: Create NGINX configuration directory
       file:
@@ -33,11 +40,13 @@
         mode: 0755
         owner: root
         group: root
+      when: not dir_check.stat.exists
 
     - name: Create Nginx configuration file
       template:
         src: unique_templates_config/coolify_lb/nginx_coolify.conf.j2
         dest: /etc/nginx/nginx.conf
+      notify: Restart Nginx
     
     - name: Allow ports on lb
       community.general.ufw:
@@ -46,10 +55,11 @@
       loop:
         - 4000
         - 5000
-        - 8080
+        - 6000
+        - 7000
 
   handlers:
     - name: Reload NGINX
-      systemd:
-        name: nginx
+      ansible.builtin.systemd_service:
+        name: nginx.service
         state: reloaded

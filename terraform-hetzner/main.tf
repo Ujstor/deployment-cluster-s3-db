@@ -124,7 +124,7 @@ resource "hcloud_server" "backup" {
 
 resource "hcloud_volume" "backup_volume" {
   count    = var.volumes_per_node * var.instances_backup
-  name     = "backup-volume-${count.index}"
+  name     = "drive-${count.index + 1}"
   size     = var.disk_size
   location = local.calculate_location_backup[count.index % length(local.calculate_location_backup)]
   format   = "xfs"

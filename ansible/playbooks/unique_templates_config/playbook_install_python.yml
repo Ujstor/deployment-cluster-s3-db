@@ -1,4 +1,4 @@
-- hosts: db, nginx-minio-lb
+- hosts: db
   become: yes
   tasks:
     - name: Install Python
@@ -19,6 +19,3 @@
     - name: Install psycopg2-binary
       pip:
         name: psycopg2-binary
-
-
-    

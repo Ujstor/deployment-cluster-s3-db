@@ -1,17 +1,17 @@
 ---
 - name: Configure MinIO Custom DNS mappings
-  hosts: all
+  hosts: backup, nginx-minio-lb
   become: yes
   vars:
     dns_mappings:
-      - hostname: "mini1.hetzner.dev"
-        ip_address: "192.168.1.101"
-      - hostname: "mini2.hetzner.dev"
-        ip_address: "192.168.1.102"
-      - hostname: "mini3.hetzner.dev"
-        ip_address: "192.168.1.103"
-      - hostname: "mini4.hetzner.dev"
-        ip_address: "192.168.1.103"
+      - hostname: "minio-1.ujstor.com"
+        ip_address: "91.107.208.20"
+      - hostname: "minio-2.ujstor.com"
+        ip_address: "5.75.139.83"
+      - hostname: "minio-3.ujstor.com"
+        ip_address: "65.109.9.72"
+      - hostname: "minio.ujstor.com"
+        ip_address: "49.13.73.3"
 
   tasks:
     - name: Configure DNS mappings

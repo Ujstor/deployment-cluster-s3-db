@@ -8,43 +8,47 @@
     - role: common
 
   vars:
-    nginx_vhosts_items:
-      - http://mini1.hetzner.dev
-      - http://mini2.hetzner.dev
-      - http://mini3.hetzner.dev
-      - http://mini4.hetzner.dev
-    nginx_upstreams:
-      - name: hetzner_cluster
-        strategy: "least_conn"
-        servers:
-          - 192.168.1.101
-          - 192.168.1.102
-          - 192.168.1.103
-          - 192.168.1.104
+    minio_servers:
+      - 91.107.208.20
+      - 65.109.9.72
+      - 5.75.139.83
+    minio_port: 9000
+    console_port: 9001
+    console_domain: minio-console.ujstor.com
+    minio_domain: minio.ujstor.com
+
   tasks:
     - name: Install Nginx
       include_role:
         name: nginx
 
-    - name: Create directory for vhost configurations
+    - name: Create NGINX configuration directory
       file:
-        path: "/etc/nginx/conf.d/"
+        path: /etc/nginx/conf.d
         state: directory
+        mode: 0755
+        owner: root
+        group: root
 
-    - name: Create Nginx vhost configurations
-      template:
-        src: "unique_templates_config/minio_lb/vhost.conf.j2"
-        dest: "/etc/nginx/conf.d/{{ item | regex_replace('[:/]', '_') }}.conf"
-      loop: "{{ nginx_vhosts_items }}"
-      vars:
-        domain: "{{ item | regex_replace('^http://', '') | regex_replace('^https://', '') | regex_replace('[:/]', '_') }}"
-      notify: Reload Nginx
-
-  handlers:
-    - name: Reload Nginx
-      service:
+    - name: Create nginx group
+      group:
         name: nginx
-        state: reloaded
+        state: present
+
+    - name: Create nginx system user
+      user:
+        name: nginx
+        system: yes
+        createhome: no
+        shell: /bin/false
+        group: nginx
+        state: present
+
+    - name: Nginx configuration file
+      template:
+        src: unique_templates_config/minio_lb/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify: Restart Nginx
 
     - name: Allow http, UI and S3 API ports
       community.general.ufw:
@@ -54,3 +58,11 @@
         - 80
         - 9000
         - 9001
+
+  handlers:
+    - name: Restart Nginx
+      ansible.builtin.systemd_service:
+        name: nginx.service
+        state: reloaded
+
+# sudo adduser --system --no-create-home --disabled-login --group nginx
