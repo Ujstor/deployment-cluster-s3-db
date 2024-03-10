@@ -5,15 +5,42 @@
   hosts: backup
   become: true
   ignore_unreachable: true
+  gather_facts: true
+  vars:
+    server_hostname: minio.ujstor.com
+    ssl_key_size: 4096
+    ssl_certificate_provider: selfsigned
+    inventory_hostname: ujstor.com
+
+  pre_tasks:
+    - name: Generate self-signed SSL certificates for minio
+      include_tasks: unique_templates_config/generate_selfsigned_cert.yml
+      args:
+        apply:
+          delegate_to: localhost
+          become: false
+    - name: Load tls key and cert
+      set_fact:
+        minio_key: "{{ lookup('file','unique_templates_config/certificates/' + inventory_hostname + '_private.key') }}"
+        minio_cert: "{{ lookup('file','unique_templates_config/certificates/' + inventory_hostname + '_public.crt') }}"
 
   roles:
     - role: common
     - role: minio
-
-  vars:
     minio_server_cluster_nodes:
-      ["http://minio-{1...3}.ujstor.com:9000/mnt/disk{1...4}/minio"]
-    minio_server_env_extra: 'MINIO_ROOT_USER: "ujstor" MINIO_ROOT_PASSWORD: "roottoor!" MINIO_SERVER_URL: "minio.ujstor.com:9000"'
+      ["https://minio-{1...3}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio"]
+
+    minio_server_port: "9091"
+    minio_console_port: "9092"
+
+    minio_root_user: "ujstor"
+    minio_root_password: "root"
+
+    minio_validate_certificate: true
+    minio_alias: "myminio"
+
+    minio_url: "https://minio.ujstor.com:{{ minio_server_port }}"
+
 
   tasks:
     - name: Allow http, UI and S3 API ports
@@ -21,30 +48,9 @@
         rule: allow
         port: "{{ item }}"
       loop:
-        - 9000
-        - 9001
-      notify: Restart Nginx
-
-  #   - name: Check if cert directory exists
-  #     stat:
-  #       path: ${HOME}/.minio/certs
-  #     register: dir_check
-
-  #   - name: Create cert directory
-  #     file:
-  #       path: ${HOME}/.minio/certs
-  #       state: directory
-  #     when: not dir_check.stat.exists
-
-  #   - name: Copy openssl crt
-  #     copy:
-  #       src: unique_templates_config/scripts/local-openssl/ujstor.com.crt
-  #       dest: ${HOME}/.minio/certs
-
-  #   - name: Copy openssl csr
-  #     copy:
-  #       src: unique_templates_config/scripts/local-openssl/ujstor.com.csr
-  #       dest: ${HOME}/.minio/certs
+        - 9091
+        - 9092
+      #notify: restart nginx
 
   #   - name: Copy mount volume rename script
   #     copy:

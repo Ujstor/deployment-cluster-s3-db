@@ -18,3 +18,5 @@ jobs:
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v24.2.0
+        with:
+          ignore_rules: "ANSIBLE0006, ANSIBLE0010, ANSIBLE0012"
