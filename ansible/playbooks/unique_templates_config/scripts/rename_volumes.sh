@@ -7,7 +7,7 @@ counter=1
 while IFS= read -r line; do
     if [[ $line == *HC_Volume* ]]; then
         mount_point=$(echo "$line" | awk '{print $2}')
-        new_mount_point="/mnt/disk-$counter"
+        new_mount_point="/mnt/disk$counter"
         
         sed -i "s|$mount_point|$new_mount_point|" /etc/fstab
         

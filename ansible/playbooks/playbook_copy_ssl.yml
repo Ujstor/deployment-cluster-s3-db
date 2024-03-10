@@ -1,0 +1,33 @@
+- name: rename ssl
+  hosts: backup
+  become: true
+  tasks:
+    - name: Copy crt
+      copy:
+        src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.crt
+        dest: /etc/minio/ssl/public.crt
+
+    - name: Copy key
+      copy:
+        src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.key
+        dest: /etc/minio/ssl/private.key
+    # - name: Check if cert directory exists
+    #   stat:
+    #     path: ${HOME}/.minio/certs
+    #   register: dir_check
+
+    # - name: Create cert directory
+    #   file:
+    #     path: ${HOME}/.minio/certs
+    #     state: directory
+    #   when: not dir_check.stat.exists
+
+    # - name: Copy openssl crt
+    #   copy:
+    #     src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.crt
+    #     dest: ${HOME}/.minio/certs
+
+    # - name: Copy openssl key
+    #   copy:
+    #     src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.key
+    #     dest: ${HOME}/.minio/certs

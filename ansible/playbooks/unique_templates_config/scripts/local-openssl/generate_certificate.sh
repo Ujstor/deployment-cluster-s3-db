@@ -1,12 +1,18 @@
 #!/bin/sh
 
-openssl genrsa -out ujstor.com.key 2048
+# Set the correct hostname
+HOSTNAME="minio.ujstor.com"
 
-openssl req -new -key ujstor.com.key -out ujstor.com.csr -subj "/CN=ujstor.com"
+openssl ecparam -name prime256v1 -genkey -noout -out "${HOSTNAME}.key"
 
-openssl x509 -req -days 365 -in ujstor.com.csr -signkey ujstor.com.key -out ujstor.com.crt
+openssl req -new -key "${HOSTNAME}.key" -out "${HOSTNAME}.csr" -subj "/CN=${HOSTNAME}"
 
-cp ujstor.com.crt /app/ujstor.com.crt
-cp ujstor.com.key /app/ujstor.com.key
+openssl x509 -req -days 365 -in "${HOSTNAME}.csr" -signkey "${HOSTNAME}.key" -out "${HOSTNAME}.crt"
 
-echo "SSL certificate for ujstor.com generated successfully!"
+chmod 644 ${HOSTNAME}.key
+chmod 644 ${HOSTNAME}.crt
+
+echo "SSL certificate for ${HOSTNAME} generated successfully!"
+
+chmod 644 minio.ujstor.com.key
+chmod 644 minio.ujstor.com.crt

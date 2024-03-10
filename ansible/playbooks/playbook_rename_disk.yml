@@ -1,0 +1,17 @@
+---
+- name: rename hetzner volumes in /mnt/
+  hosts: backup
+  become: true
+  tasks:
+    - name: Copy mount volume rename script
+      copy:
+        src: unique_templates_config/scripts/rename_volumes.sh
+        dest: /tmp/rename_volumes.sh
+        mode: +x
+
+    - name: Execute the script
+      shell: /tmp/rename_volumes.sh
+
+    - name: Reboot server
+      ansible.builtin.reboot:
+        reboot_timeout: 25

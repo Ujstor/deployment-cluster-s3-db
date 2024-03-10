@@ -6,41 +6,31 @@
   become: true
   ignore_unreachable: true
   gather_facts: true
-  vars:
-    server_hostname: minio.ujstor.com
-    ssl_key_size: 4096
-    ssl_certificate_provider: selfsigned
-    inventory_hostname: ujstor.com
-
   pre_tasks:
-    - name: Generate self-signed SSL certificates for minio
-      include_tasks: unique_templates_config/generate_selfsigned_cert.yml
-      args:
-        apply:
-          delegate_to: localhost
-          become: false
     - name: Load tls key and cert
       set_fact:
-        minio_key: "{{ lookup('file','unique_templates_config/certificates/' + inventory_hostname + '_private.key') }}"
-        minio_cert: "{{ lookup('file','unique_templates_config/certificates/' + inventory_hostname + '_public.crt') }}"
-
-  roles:
-    - role: common
-    - role: minio
+        minio_key: "{{ lookup('file','unique_templates_config/scripts/local-openssl/ujstor.com.key') }}"
+        minio_cert: "{{ lookup('file','unique_templates_config/scripts/local-openssl/ujstor.com.crt') }}"
+      delegate_to: localhost
+  
+  vars:
     minio_server_cluster_nodes:
-      ["https://minio-{1...3}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio"]
+      ["https://minio{1...3}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio"]
 
     minio_server_port: "9091"
     minio_console_port: "9092"
 
     minio_root_user: "ujstor"
-    minio_root_password: "root"
+    minio_root_password: "roottoor!"
 
     minio_validate_certificate: true
     minio_alias: "myminio"
 
     minio_url: "https://minio.ujstor.com:{{ minio_server_port }}"
 
+  roles:
+    - role: common
+    - role: minio
 
   tasks:
     - name: Allow http, UI and S3 API ports
@@ -50,24 +40,12 @@
       loop:
         - 9091
         - 9092
-      #notify: restart nginx
+        - 443
+        - 80
+      notify: restart minio
 
-  #   - name: Copy mount volume rename script
-  #     copy:
-  #       src: unique_templates_config/scripts/rename_volumes.sh
-  #       dest: /tmp/rename_volumes.sh
-  #       mode: +x
-
-  #   - name: Execute the script
-  #     shell: /tmp/rename_volumes.sh
-
-  #   - name: Reboot server
-  #     shell: reboot
-  #     async: 1
-  #     poll: 0
-  
   handlers:
-    - name: Reload NGINX
+    - name: restart minio
       ansible.builtin.systemd_service:
         name: minio.service
-        state: reloaded
+        state: restarted

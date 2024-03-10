@@ -16,8 +16,32 @@
     console_port: 9092
     console_domain: minio-console.ujstor.com
     minio_domain: minio.ujstor.com
+    crt_path: /root/.minio/certs/minio.ujstor.com.crt
+    crt_private_key_path: /root/.minio/certs/minio.ujstor.com.key
+
 
   tasks:
+    - name: Check if cert directory exists
+      stat:
+        path: ${HOME}/.minio/certs
+      register: dir_check
+
+    - name: Create cert directory
+      file:
+        path: ${HOME}/.minio/certs
+        state: directory
+      when: not dir_check.stat.exists
+
+    - name: Copy openssl crt
+      copy:
+        src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.crt
+        dest: ${HOME}/.minio/certs
+
+    - name: Copy openssl key
+      copy:
+        src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.key
+        dest: ${HOME}/.minio/certs
+
     - name: Install Nginx
       include_role:
         name: nginx
@@ -56,6 +80,7 @@
         port: "{{ item }}"
       loop:
         - 80
+        - 443
         - 9091
         - 9092
 
@@ -63,6 +88,6 @@
     - name: Restart Nginx
       ansible.builtin.systemd_service:
         name: nginx.service
-        state: reloaded
+        state: restarted
 
 # sudo adduser --system --no-create-home --disabled-login --group nginx
