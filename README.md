@@ -285,7 +285,7 @@ Available variables are listed below along with default values (see `defaults\ma
   `minio_url` might be needed in case MinIO Server TLS certificates do not contain any IP Subject Alternative Names (SAN). See [MINIO_SERVER_URL environment variable definition](https://min.io/docs/minio/linux/reference/minio-server/minio-server.html#envvar.MINIO_SERVER_URL).
 
   ```yml
-  minio_url: "https://minio.ricsanfre.com:{{ minio_server_port }}"
+  minio_url: "https://minio.test.com:{{ minio_server_port }}"
   ```
 
 
@@ -446,7 +446,7 @@ It also create some buckets and users with proper ACLs
         minio_cert: "{{ lookup('file','certificates/' + inventory_hostname + '_public.crt') }}"
 
   roles:
-    - role: ricsanfre.minio
+    - role: minio
       minio_root_user: "miniadmin"
       minio_root_password: "supers1cret0"
       minio_enable_tls: true

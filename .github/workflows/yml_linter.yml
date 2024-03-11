@@ -12,6 +12,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: yaml-lint
         uses: ibiqlik/action-yamllint@v3
-        with:
-          args: >-
-            --exclude 'ansible/playbooks/roles/postgresql/**/*'
+  ignore: |
+    /this/specific/file.yaml

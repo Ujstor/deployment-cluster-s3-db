@@ -36,26 +36,7 @@ http {
     server {
         listen 80;
         listen [::]:80;
-        server_name {{ minio_domain }} {{ console_domain }};
-        return 301 https://$host$request_uri;
-    }
-
-    server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
         server_name {{ minio_domain }};
-
-        ssl_certificate {{ crt_path }};
-        ssl_certificate_key {{ crt_private_key_path }};
-
-        # Add SSL configurations such as SSL protocols, ciphers, etc.
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
-
-        # Include HSTS header to enforce HTTPS for future requests
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Other SSL configurations...
 
         location / {
             proxy_set_header Host $http_host;
@@ -79,23 +60,11 @@ http {
             proxy_pass http://minio;
         }
     }
-    
+
     server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 80;
+        listen [::]:80;
         server_name {{ console_domain }};
-
-        ssl_certificate {{ crt_path }};
-        ssl_certificate_key {{ crt_private_key_path }};
-
-        # Add SSL configurations such as SSL protocols, ciphers, etc.
-        ssl_protocols TLSv1.2 TLSv1.3;
-        ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
-
-        # Include HSTS header to enforce HTTPS for future requests
-        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-
-        # Other SSL configurations...
 
         location / {
             proxy_set_header Host $http_host;
@@ -116,7 +85,7 @@ http {
 
             chunked_transfer_encoding off;
 
-            proxy_pass http://console;
+            proxy_pass https://console;
         }
     }
 }

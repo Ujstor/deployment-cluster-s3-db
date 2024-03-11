@@ -1,6 +1,4 @@
 ---
-- import_playbook: unique_templates_config/playbook_dns_backup_lb.yml
-
 - name: Configure Nginx as Load Balancer for MinIO cluster
   hosts: nginx-minio-lb
   become: true
@@ -9,39 +7,15 @@
 
   vars:
     minio_servers:
-      - 91.107.208.20
+      - 49.13.73.3
       - 65.109.9.72
       - 5.75.139.83
     minio_port: 9091
     console_port: 9092
     console_domain: minio-console.ujstor.com
     minio_domain: minio.ujstor.com
-    crt_path: /root/.minio/certs/minio.ujstor.com.crt
-    crt_private_key_path: /root/.minio/certs/minio.ujstor.com.key
-
 
   tasks:
-    - name: Check if cert directory exists
-      stat:
-        path: ${HOME}/.minio/certs
-      register: dir_check
-
-    - name: Create cert directory
-      file:
-        path: ${HOME}/.minio/certs
-        state: directory
-      when: not dir_check.stat.exists
-
-    - name: Copy openssl crt
-      copy:
-        src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.crt
-        dest: ${HOME}/.minio/certs
-
-    - name: Copy openssl key
-      copy:
-        src: unique_templates_config/scripts/local-openssl/minio.ujstor.com.key
-        dest: ${HOME}/.minio/certs
-
     - name: Install Nginx
       include_role:
         name: nginx
@@ -90,4 +64,4 @@
         name: nginx.service
         state: restarted
 
-# sudo adduser --system --no-create-home --disabled-login --group nginx
+# https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal

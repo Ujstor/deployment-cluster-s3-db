@@ -1,20 +1,17 @@
 ---
 - name: Configure MinIO Custom DNS mappings
-  hosts: backup, nginx-minio-lb
+  hosts: backup
   become: yes
   vars:
     dns_mappings:
       - hostname: "minio1.ujstor.com"
-        ip_address: "91.107.208.20"
+        ip_address: "49.13.73.3"
       - hostname: "minio2.ujstor.com"
         ip_address: "5.75.139.83"
       - hostname: "minio3.ujstor.com"
         ip_address: "65.109.9.72"
       - hostname: "minio.ujstor.com"
-        ip_address: "49.13.73.3"
-      - hostname: "minio-console.ujstor.com"
-        ip_address: "49.13.73.3"
-      
+        ip_address: "localhost"
 
   tasks:
     - name: Configure DNS mappings

@@ -5,7 +5,7 @@
   tasks:
     - name: Copy mount volume rename script
       copy:
-        src: unique_templates_config/scripts/rename_volumes.sh
+        src: scripts/rename_volumes.sh
         dest: /tmp/rename_volumes.sh
         mode: +x
 
@@ -15,3 +15,6 @@
     - name: Reboot server
       ansible.builtin.reboot:
         reboot_timeout: 25
+
+# chown minio:minio /mnt/disk1 /mnt/disk2 /mnt/disk3 /mnt/disk4
+

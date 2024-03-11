@@ -1,0 +1,27 @@
+- name: Cluster ssl
+  hosts: backup
+  become: true
+  tasks:
+    - name: Check if cert directory exists
+      stat:
+        path: /etc/minio/ssl/CAs
+      register: dir_check
+
+    - name: Create cert directory
+      file:
+        path: /etc/minio/ssl/CAs
+        state: directory
+      when: not dir_check.stat.exists
+
+    - name: Copy openssl crt
+      copy:
+        src: unique_templates_config/scripts/local-openssl/public.crt
+        dest: /etc/minio/ssl
+
+    - name: Copy openssl key
+      copy:
+        src: unique_templates_config/scripts/local-openssl/private.key
+        dest: /etc/minio/ssl
+
+# curl -LO https://github.com/minio/certgen/releases/download/v1.2.1/certgen-linux-amd64
+# ./certgen-linux-amd64 -host "<domain>"
