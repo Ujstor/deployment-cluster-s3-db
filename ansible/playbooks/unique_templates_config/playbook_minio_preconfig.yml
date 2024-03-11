@@ -10,38 +10,12 @@
         ip_address: "10.0.3.3"
       - hostname: "minio3.ujstor.com"
         ip_address: "10.0.3.4"
+      - hostname: "minio4.ujstor.com"
+        ip_address: "10.0.3.5"
+      - hostname: "minio5.ujstor.com"
+        ip_address: "10.0.3.6"
+
   tasks:
-    - name: Download certgen
-      ansible.builtin.get_url:
-        url: "https://github.com/minio/certgen/releases/download/v1.2.1/certgen-linux-amd64"
-        dest: "ssl/certgen-linux-amd64"
-        mode: "u+x"
-      become: true
-      vars:
-        ansible_become_password: "root"
-      delegate_to: localhost
-
-    - name: Generate SSL certificates
-      args:
-        chdir: "ssl/"
-      ansible.builtin.shell: "./certgen-linux-amd64 -host '{{ dns_hosts }}'"
-      become: true
-      vars:
-        dns_hosts: "{{ dns_mappings | map(attribute='ip_address') | join(',') }},{{ dns_mappings | map(attribute='hostname') | join(',') }}"
-        ansible_become_password: "root"
-      delegate_to: localhost
-
-    - name: Set permissions for private key
-      ansible.builtin.file:
-        path: ssl/private.key
-        mode: "0777"
-        owner: "root"
-        group: "root"
-      become: true
-      vars:
-        ansible_become_password: "root"
-      delegate_to: localhost
-
     - name: Check if cert directory exists
       stat:
         path: /etc/minio/ssl/CAs
@@ -95,4 +69,4 @@
         timeout: 300 
 
 # curl -LO https://github.com/minio/certgen/releases/download/v1.2.1/certgen-linux-amd64
-# ./certgen-linux-amd64 -host "10.0.3.2, 10.0.3.3, 10.0.3.4, minio1.ujstor.com, minio2.ujstor.com, minio3.ujstor.com"
+# sudo ./certgen-linux-amd64 -host "10.0.3.2, 10.0.3.3, 10.0.3.4, 10.0.3.6, 10.0.3.6, minio1.ujstor.com, minio2.ujstor.com, minio3.ujstor.com, minio4.ujstor.com, minio5.ujstor.com" && sudo chmod 644 private.key

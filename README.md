@@ -710,10 +710,6 @@ Create the child template in the path you configured above and extend `nginx` te
 {% endblock %}
 ```
 
-## Dependencies
-
-None.
-
 ## Example Playbook
 
     - hosts: server

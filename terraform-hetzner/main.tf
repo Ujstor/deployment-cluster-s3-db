@@ -1,8 +1,6 @@
 locals {
   calculate_location        = [for idx in range(var.instances_coolify_node) : var.location_list[idx % length(var.location_list)]]
   calculate_location_backup = [for idx in range(var.instances_backup) : var.location_list[idx % length(var.location_list)]]
-
-
 }
 resource "hcloud_server" "coolify_master" {
   count       = var.instances_coolify_master
@@ -95,7 +93,7 @@ resource "hcloud_server" "utils" {
 
   depends_on = [
     hcloud_network_subnet.resource_subnet
-  ]  
+  ]
 }
 
 resource "hcloud_server" "backup" {
@@ -119,7 +117,7 @@ resource "hcloud_server" "backup" {
 
   depends_on = [
     hcloud_network_subnet.db_backup_subnet
-  ]  
+  ]
 }
 
 resource "hcloud_volume" "backup_volume" {
@@ -131,16 +129,16 @@ resource "hcloud_volume" "backup_volume" {
 
   depends_on = [
     hcloud_server.backup
-  ]  
+  ]
 }
 
 resource "hcloud_volume_attachment" "backup_vol_attachment" {
   count     = var.volumes_per_node * var.instances_backup
   volume_id = hcloud_volume.backup_volume[count.index].id
-  server_id = element([for s in hcloud_server.backup : s.id if s.location == hcloud_volume.backup_volume[count.index].location], 0)
+  server_id = hcloud_server.backup[count.index % length(hcloud_server.backup)].id
   automount = true
 
   depends_on = [
     hcloud_server.backup
-  ]  
+  ]
 }
