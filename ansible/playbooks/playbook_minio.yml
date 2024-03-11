@@ -1,11 +1,10 @@
 ---
-- import_playbook: unique_templates_config/playbook_dns_backup_lb.yml
+- import_playbook: unique_templates_config/playbook_minio_preconfig.yml
 
 - name: Install minIO
   hosts: backup
   become: true
   ignore_unreachable: true
-  gather_facts: true
   vars:
     minio_server_cluster_nodes:
       ["https://minio{1...3}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio"]
@@ -17,9 +16,7 @@
     minio_root_password: "roottoor123"
 
     minio_validate_certificate: true
-    minio_alias: "myminio"
-
-    minio_url: "https://minio.ujstor.com:{{ minio_server_port }}"
+    minio_alias: "ujstorminio"
 
   roles:
     - role: common
@@ -35,10 +32,39 @@
         - 9092
         - 443
         - 80
-      notify: restart minio
+    
+    - name: Reboot server1
+      shell: "reboot"
+      async: 0
+      poll: 0
+        
+    - name: Wait for servers to come back online1
+      ansible.builtin.wait_for_connection:
+        delay: 30
+        timeout: 300 
 
-  handlers:
-    - name: restart minio
-      ansible.builtin.systemd_service:
-        name: minio.service
-        state: restarted
+    - name: Change ownershipfor /mnt/disk 
+      become: yes
+      become_user: root
+      file:
+        path: "{{ item }}"
+        owner: minio
+        group: minio
+        state: directory
+      with_items:
+        - /mnt/disk1
+        - /mnt/disk2
+        - /mnt/disk3
+        - /mnt/disk4
+    
+    - name: Reboot server2
+      shell: "reboot"
+      async: 0
+      poll: 0
+    
+    - name: Wait for servers to come back online2
+      ansible.builtin.wait_for_connection:
+        delay: 30
+        timeout: 300 
+
+# sudo chown -R minio:minio /mnt/disk{1,2,3,4}

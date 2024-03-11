@@ -40,8 +40,6 @@ terraform
 
 docs/
 .vscode
-stale.yml
 
-/ansible/playbooks/unique_templates_config/scripts/local-openssl/*.crt
-/ansible/playbooks/unique_templates_config/scripts/local-openssl/*.csr
-/ansible/playbooks/unique_templates_config/scripts/local-openssl/*.key
+/ansible/playbooks/unique_templates_config/ssl/*.crt
+/ansible/playbooks/unique_templates_config/ssl/*.key

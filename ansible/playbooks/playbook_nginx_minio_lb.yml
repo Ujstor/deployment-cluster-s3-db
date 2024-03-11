@@ -7,9 +7,9 @@
 
   vars:
     minio_servers:
-      - 49.13.73.3
-      - 65.109.9.72
-      - 5.75.139.83
+      - 10.0.3.2
+      - 10.0.3.3
+      - 10.0.3.4
     minio_port: 9091
     console_port: 9092
     console_domain: minio-console.ujstor.com

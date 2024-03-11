@@ -13,10 +13,7 @@ jobs:
 
       - name: Install Ansible Collection
         run: |
-          ansible-galaxy collection install community.general
-          ansible-galaxy collection install ansible.posix 
-
+          ansible-galaxy install -r requirements.yml
+ 
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v24.2.0
-        with:
-          ignore_rules: "ANSIBLE0006, ANSIBLE0010, ANSIBLE0012"

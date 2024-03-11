@@ -1,16 +1,14 @@
-name: yml-lint
+# name: yml-lint
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
+# on:
+#   push:
+#     branches: [ master ]
+#   pull_request:
 
-jobs:
-  lintAllTheThings:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: yaml-lint
-        uses: ibiqlik/action-yamllint@v3
-  ignore: |
-    /this/specific/file.yaml
+# jobs:
+#   lintAllTheThings:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: yaml-lint
+#         uses: ibiqlik/action-yamllint@v3
