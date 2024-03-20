@@ -16,5 +16,3 @@ skip_list:
   - no-changed-when 
   - command-instead-of-shell
 
-  exclude_paths:
-  - playbooks/roles/postgresql
