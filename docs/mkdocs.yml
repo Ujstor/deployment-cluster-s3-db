@@ -1,0 +1,31 @@
+### Site metadata ###
+
+site_name: Deployment Cluster Docs
+site_description: Official documentation for Deployment Cluste 
+site_url: https://github.com/Ujstor/deployment-cluster-s3-db 
+
+repo_url: https://github.com/Melkeydev/go-blueprint
+edit_uri: edit/main/docs/docs
+
+### Build settings ###
+
+theme: readthedocs
+nav:
+  - Home: index.md
+  - Create infrastructure: create_infrastructure.md
+  - Playbooks:
+    - MinIO: playbooks/minio_playbook.md
+    - Coolify: playbooks/coolify_playbook.md
+  - Roles:
+    - MinIO: roles/minio.md
+    - Nginx: roles/nginx.md
+    - Psql: roles/psql.md
+  - Terminal output:
+     - Terraform: terminal/terraform.md
+     - Coolify: terminal/coolify_ansible.md
+     - MinIO: terminal/minio_ansible.md
+     - Psql: terminal/db_ansible.md
+     - Nginx MinIO: terminal/nginx_minio.md
+
+
+    

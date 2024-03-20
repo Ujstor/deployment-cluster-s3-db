@@ -1,0 +1,29 @@
+events {
+    worker_connections  1024;
+}
+
+http {
+    {% for domain in domains %}
+    upstream backend_cluster_{{ domain.port }} {
+        least_conn;
+        {% for server in backend_servers %}
+        server {{ server }}:{{ domain.port }};
+        {% endfor %}
+    }
+    {% endfor %}
+
+    {% for domain in domains %}
+    server {
+        listen 80;
+        server_name {{ domain.name }};
+
+        location / {
+            proxy_pass http://backend_cluster_{{ domain.port }};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+    {% endfor %}
+}

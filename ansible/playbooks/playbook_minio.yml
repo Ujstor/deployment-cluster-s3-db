@@ -1,13 +1,16 @@
 ---
-- import_playbook: unique_templates_config/playbook_minio_preconfig.yml
+- name: Minio preconfig
+  import_playbook: templates_config/playbook_minio_preconfig.yml
 
 - name: Install minIO
-  hosts: backup
+  hosts: minio
   become: true
   ignore_unreachable: true
   vars:
     minio_server_cluster_nodes:
-      ["https://minio{1...3}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio"]
+      [
+        "https://minio{1...4}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio",
+      ]
 
     minio_server_port: "9091"
     minio_console_port: "9092"
@@ -30,23 +33,21 @@
       loop:
         - 9091
         - 9092
-        - 443
-        - 80
-    
+
     - name: Reboot server1
-      shell: "reboot"
+      ansible.builtin.shell: "reboot"
       async: 0
       poll: 0
-        
+
     - name: Wait for servers to come back online1
       ansible.builtin.wait_for_connection:
         delay: 30
-        timeout: 300 
+        timeout: 300
 
-    - name: Change ownershipfor /mnt/disk 
-      become: yes
+    - name: Change ownership for /mnt/disk
+      become: true
       become_user: root
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         owner: minio
         group: minio
@@ -56,15 +57,15 @@
         - /mnt/disk2
         - /mnt/disk3
         - /mnt/disk4
-    
+
     - name: Reboot server2
-      shell: "reboot"
+      ansible.builtin.shell: "reboot"
       async: 0
       poll: 0
-    
+
     - name: Wait for servers to come back online2
       ansible.builtin.wait_for_connection:
         delay: 30
-        timeout: 300 
+        timeout: 300
 
 # sudo chown -R minio:minio /mnt/disk{1,2,3,4}

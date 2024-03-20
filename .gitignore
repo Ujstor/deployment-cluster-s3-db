@@ -38,8 +38,9 @@ terraform.rc
 terraform
 .terraform*
 
-docs/
 .vscode
 
-/ansible/playbooks/unique_templates_config/ssl/*.crt
-/ansible/playbooks/unique_templates_config/ssl/*.key
+/ansible/playbooks/templates_config/ssl/*.crt
+/ansible/playbooks/templates_config/ssl/*.key
+
+__pycache__

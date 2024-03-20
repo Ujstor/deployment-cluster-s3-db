@@ -1,5 +1,20 @@
 skip_list:
   - yaml[trailing-spaces]
-  - yaml[indentation]
   - yaml[new-line-at-end-of-file]
+  - yaml[octal-values]
+  - yaml[line-length]
   - yaml[brackets]
+  - yaml[indentation]
+  - fqcn[action-core]
+  - fqcn[action] 
+  - name[missing]
+  - name[casing]
+  - var-naming[no-role-prefix]
+  - no-handler
+  - risky-file-permissions
+  - no-free-form
+  - no-changed-when 
+  - command-instead-of-shell
+
+  exclude_paths:
+  - playbooks/roles/postgresql

@@ -1,22 +1,22 @@
 hcloud_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-location_list              = ["fsn1", "nbg1", "hel1"]
-location                   = "fsn1"
-instances_lb               = "0"
-instances_minio_lb         = "0"
-instances_coolify_master   = "1"
-instances_coolify_node     = "0"
-instances_db               = "0"
-instances_utils            = "0"
-instances_backup           = "6"
-server_type_coolify_node   = "cx21"
-server_type_coolify_master = "cx11"
-server_type_db             = "cx41"
-server_type_utils          = "cx21"
-server_type_backup         = "cx31"
-os_type                    = "ubuntu-20.04"
-volumes_per_node           = "3"
-disk_size                  = "10"
-http_protocol              = "http"
-http_port                  = "20"
-public_net                 = true
+location_list     = ["fsn1", "nbg1", "hel1"]
+
+instances_lb      = "1"
+instances_minio_lb = "1"
+instances_coolify_controler = "1"
+instances_coolify_worker = "4"
+instances_db      = "1"
+instances_services = "2"
+instances_minio   = "4"
+
+server_type_coolify_controler = "cx11"
+server_type_coolify_worker     = "cx21"
+server_type_db       = "cx41"
+server_type_services = "cx21"
+server_type_minio    = "cx21"
+
+os_type        = "ubuntu-22.04"
+disk_size      = "10"
+volumes_per_node = "4"
+public_net     = true

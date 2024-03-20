@@ -1,90 +1,40 @@
 locals {
-  calculate_location        = [for idx in range(var.instances_coolify_node) : var.location_list[idx % length(var.location_list)]]
-  calculate_location_backup = [for idx in range(var.instances_backup) : var.location_list[idx % length(var.location_list)]]
-}
-resource "hcloud_server" "coolify_master" {
-  count       = var.instances_coolify_master
-  name        = "coolify-master"
-  image       = var.os_type
-  server_type = var.server_type_coolify_master
-  location    = var.location
-  ssh_keys    = [hcloud_ssh_key.default.id]
-  labels = {
-    type = "coolify-master"
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOT
-     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
-     chmod 600 ~/.ssh/hetzner_key.pem
-   EOT
-  }
-  depends_on = [
-    hcloud_network_subnet.deployment_subnet
-  ]
+  calculate_location = [for idx in range(var.instances_coolify_worker) : var.location_list[idx % length(var.location_list)]]
 }
 
-resource "hcloud_server" "coolify_node" {
-  count       = var.instances_coolify_node
-  name        = "coolify-node-${count.index}"
+resource "hcloud_server" "coolify_controler" {
+  count       = var.instances_coolify_controler
+  name        = "coolify-controler-${count.index}"
   image       = var.os_type
-  server_type = var.server_type_coolify_node
+  server_type = var.server_type_coolify_controler
   location    = local.calculate_location[count.index]
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
-    type = "coolify-node"
-  }
-  public_net {
-    # On default public ip is enabled, after server provisioning with ansible
-    # and lb setup changes public ip to false in vari.tfvars
-    ipv4_enabled = var.public_net
-    ipv6_enabled = var.public_net
+    type = "coolify-controler"
   }
 
+  provisioner "local-exec" {
+    command = <<-EOT
+     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/cluster_hetzner_key.pem &&
+     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/cluster_hetzner_key.pub &&
+     chmod 600 ~/.ssh/cluster_hetzner_key.pem
+   EOT
+
+  }
   depends_on = [
     hcloud_network_subnet.deployment_subnet
   ]
 }
 
-resource "hcloud_server" "postgres_db" {
-  count       = var.instances_db
-  name        = "postgres-${count.index}"
+resource "hcloud_server" "coolify_worker" {
+  count       = var.instances_coolify_worker
+  name        = "coolify-worker-${count.index}"
   image       = var.os_type
-  server_type = var.server_type_db
-  location    = var.location
+  server_type = var.server_type_coolify_worker
+  location    = local.calculate_location[count.index]
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
-    type = "db"
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOT
-     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
-     chmod 600 ~/.ssh/hetzner_key.pem
-   EOT
-  }
-
-  public_net {
-    ipv4_enabled = var.public_net
-    ipv6_enabled = var.public_net
-  }
-
-  depends_on = [
-    hcloud_network_subnet.db_backup_subnet
-  ]
-}
-
-resource "hcloud_server" "utils" {
-  count       = var.instances_utils
-  name        = "utils-${count.index}"
-  image       = var.os_type
-  server_type = var.server_type_utils
-  location    = var.location
-  ssh_keys    = [hcloud_ssh_key.default.id]
-  labels = {
-    type = "utils"
+    type = "coolify-worker"
   }
   public_net {
     ipv4_enabled = var.public_net
@@ -92,53 +42,28 @@ resource "hcloud_server" "utils" {
   }
 
   depends_on = [
-    hcloud_network_subnet.resource_subnet
+    hcloud_network_subnet.deployment_subnet,
+    hcloud_server.coolify_controler
   ]
 }
 
-resource "hcloud_server" "backup" {
-  count       = var.instances_backup
-  name        = "backup-${count.index}"
+resource "hcloud_server" "services" {
+  count       = var.instances_services
+  name        = "services-${count.index}"
   image       = var.os_type
-  server_type = var.server_type_backup
-  location    = local.calculate_location_backup[count.index]
+  server_type = var.server_type_services
+  location    = local.calculate_location[count.index]
   ssh_keys    = [hcloud_ssh_key.default.id]
   labels = {
-    type = "backup"
+    type = "services"
   }
-
-  provisioner "local-exec" {
-    command = <<-EOT
-     echo "${tls_private_key.ssh_key.private_key_pem}" > ~/.ssh/hetzner_key.pem &&
-     echo "${tls_private_key.ssh_key.public_key_openssh}" > ~/.ssh/hetzner_key.pub &&
-     chmod 600 ~/.ssh/hetzner_key.pem
-   EOT
+  public_net {
+    ipv4_enabled = var.public_net
+    ipv6_enabled = var.public_net
   }
 
   depends_on = [
-    hcloud_network_subnet.db_backup_subnet
-  ]
-}
-
-resource "hcloud_volume" "backup_volume" {
-  count    = var.volumes_per_node * var.instances_backup
-  name     = "drive-${count.index + 1}"
-  size     = var.disk_size
-  location = local.calculate_location_backup[count.index % length(local.calculate_location_backup)]
-  format   = "xfs"
-
-  depends_on = [
-    hcloud_server.backup
-  ]
-}
-
-resource "hcloud_volume_attachment" "backup_vol_attachment" {
-  count     = var.volumes_per_node * var.instances_backup
-  volume_id = hcloud_volume.backup_volume[count.index].id
-  server_id = hcloud_server.backup[count.index % length(hcloud_server.backup)].id
-  automount = true
-
-  depends_on = [
-    hcloud_server.backup
+    hcloud_network_subnet.services_subnet,
+    hcloud_server.coolify_controler
   ]
 }

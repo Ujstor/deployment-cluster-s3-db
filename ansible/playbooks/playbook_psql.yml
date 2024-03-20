@@ -1,8 +1,8 @@
 ---
-- import_playbook: unique_templates_config/playbook_install_python.yml
+- import_playbook: templates_config/playbook_install_python.yml
 
 - hosts: db
-  become: yes
+  become: true
   vars:
     postgresql_version: 16
     postgresql_listen_addresses: "*"
