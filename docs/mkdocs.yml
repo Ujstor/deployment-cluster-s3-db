@@ -2,10 +2,10 @@
 
 site_name: Deployment Cluster Docs
 site_description: Official documentation for Deployment Cluste 
-site_url: https://github.com/Ujstor/deployment-cluster-s3-db 
+site_url: https://ujstor.github.io/deployment-cluster-s3-db/
 
-repo_url: https://github.com/Melkeydev/go-blueprint
-edit_uri: edit/main/docs/docs
+repo_url: https://github.com/Ujstor/deployment-cluster-s3-db
+edit_uri: edit/master/docs/docs
 
 ### Build settings ###
 

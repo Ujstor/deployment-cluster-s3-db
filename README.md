@@ -21,7 +21,7 @@ Paste API token in the `.auto.tfvars`. This will overwrite default values in `va
 
 
 
-**For configuration and deployment instructions, please refer to the docs!**
+**For configuration and deployment instructions, please refer to the [docs](https://ujstor.github.io/deployment-cluster-s3-db/)**
 
 ---
 
