@@ -1,0 +1,1134 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Official documentation for Deployment Cluste">
+      
+      
+      
+        <link rel="canonical" href="https://ujstor.github.io/deployment-cluster-s3-db/playbooks/minio_playbook/">
+      
+      
+        <link rel="prev" href="../../create_infrastructure/">
+      
+      
+        <link rel="next" href="../coolify_playbook/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
+    
+    
+      
+        <title>MinIO - Deployment Cluster Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e359304.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+    
+      
+    
+    <script defer data-domain="ujstor.github.io/deployment-cluster-s3-db" src="https://analytics.ujstor.com/js/script.js"></script>
+
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#minio-s3-storage-playbook" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Deployment Cluster Docs" class="md-header__button md-logo" aria-label="Deployment Cluster Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Deployment Cluster Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MinIO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Ujstor/deployment-cluster-s3-db" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Deployment Cluster Docs" class="md-nav__button md-logo" aria-label="Deployment Cluster Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Deployment Cluster Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Ujstor/deployment-cluster-s3-db" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../create_infrastructure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create infrastructure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Playbooks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Playbooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    MinIO
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    MinIO
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#minio-s3-storage-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinIO S3 storage playbook
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configure infrastructure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-configure-minio-nginx-playbooks-and-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Configure Minio, Nginx playbooks and Hosts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Configure Minio, Nginx playbooks and Hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-minio-playbook-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      a) MinIO playbook config
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-preconfig-playbook-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      b) Preconfig playbook configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-configure-nginx-lb" class="md-nav__link">
+    <span class="md-ellipsis">
+      c) Configure Nginx lb
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-run-playbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Run playbooks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ssh-into-lb-and-configure-ssl" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. SSH into LB and configure ssl
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-open-ui-and-test-s3-compatable-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Open UI and test S3 compatable API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Open UI and test S3 compatable API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coolify_playbook/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coolify
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Roles
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Roles
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roles/minio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MinIO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roles/nginx/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nginx
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roles/psql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Psql
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Terminal output
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Terminal output
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminal/terraform/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terraform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminal/coolify_ansible/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Coolify
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminal/minio_ansible/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MinIO
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminal/db_ansible/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Psql
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#minio-s3-storage-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinIO S3 storage playbook
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configure infrastructure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-configure-minio-nginx-playbooks-and-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Configure Minio, Nginx playbooks and Hosts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Configure Minio, Nginx playbooks and Hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-minio-playbook-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      a) MinIO playbook config
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-preconfig-playbook-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      b) Preconfig playbook configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-configure-nginx-lb" class="md-nav__link">
+    <span class="md-ellipsis">
+      c) Configure Nginx lb
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-run-playbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Run playbooks
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ssh-into-lb-and-configure-ssl" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. SSH into LB and configure ssl
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-open-ui-and-test-s3-compatable-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Open UI and test S3 compatable API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Open UI and test S3 compatable API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>MinIO</h1>
+
+<h2 id="minio-s3-storage-playbook">MinIO S3 storage playbook</h2>
+<p>MinIO is a High-Performance Object Storage system released under GNU Affero General Public License v3.0. It is API compatible with the Amazon S3 cloud storage service. In a Multi-Node Multi-Drive (MNMD) or “Distributed” configuration, provides enterprise-grade performance, availability, and scalability and are the recommended topology for all production workloads.</p>
+<p>MNMD deployments support erasure configurations which tolerate the loss of up to half the nodes or drives in the deployment while continuing to serve read operations.</p>
+<h2 id="1-configure-infrastructure">1. Configure infrastructure</h2>
+<p>Choose how many servers you want to have in your cluster. It is recommended to have a minimum of 2 MinIO servers. In this example, we will use 4 servers distributed across all available locations. There are 3 locations in the EU: ["fsn1", "nbg1", "hel1"]. The number of servers and disks per VPS created will rotate around this list. Disks are auto-mounted, with a limit of 16 volumes per server.</p>
+<p>Load balancing (LB) is also needed to route requests automatically to nodes in the deployment. A multi-node setup eliminates a single point of failure. For best practices, check the MinIO <a href="https://min.io/docs/minio/linux/index.html">documentation</a>.</p>
+<hr />
+<h2 id="2-configure-minio-nginx-playbooks-and-hosts">2. Configure Minio, Nginx playbooks and Hosts</h2>
+<p>In your <code>inventory/hosts</code> file, specify the IP addresses of your newly created servers obtained from Terraform output, or alternatively, verify them in the Hetzner Cloud console</p>
+<h4 id="a-minio-playbook-config"><strong>a) MinIO playbook config</strong></h4>
+<p>MinIO requires using expansion notation {x...y} to denote a sequential series of MinIO hosts and volumes when creating a server pool. Other variables are self explanatory:</p>
+<pre><code class="language-bash">vars:
+    minio_server_cluster_nodes:
+      [
+        &quot;https://minio{1...4}.ujstor.com:{{ minio_server_port }}/mnt/disk{1...4}/minio&quot;,
+      ]
+
+    minio_server_port: &quot;9091&quot;
+    minio_console_port: &quot;9092&quot;
+
+    minio_root_user: &quot;ujstor&quot;
+    minio_root_password: &quot;roottoor123&quot;
+
+    minio_validate_certificate: true
+    minio_alias: &quot;ujstorminio&quot;
+</code></pre>
+<p>Another important aspect is defining the volumes per node that will have permissions for the MinIO user and group:</p>
+<pre><code class="language-bash">- name: Change ownership for /mnt/disk
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: &quot;{{ item }}&quot;
+        owner: minio
+        group: minio
+        state: directory
+      with_items:
+        - /mnt/disk1
+        - /mnt/disk2
+        - /mnt/disk3
+        - /mnt/disk4
+</code></pre>
+<h4 id="b-preconfig-playbook-configuration"><strong>b) Preconfig playbook configuration</strong></h4>
+<p>In the <code>folder minio_config</code>, there is a preconfig playbook. This playbook will create DNS mappings, rename default volume names created by Hetzner, and copy certificates to every node.</p>
+<p>First, add hostnames and private IPs:</p>
+<pre><code class="language-bash">  vars:
+    dns_mappings:
+      - hostname: &quot;minio1.ujstor.com&quot;
+        ip_address: &quot;10.0.4.2&quot;
+      - hostname: &quot;minio2.ujstor.com&quot;
+        ip_address: &quot;10.0.4.3&quot;
+      - hostname: &quot;minio3.ujstor.com&quot;
+        ip_address: &quot;10.0.4.4&quot;
+      - hostname: &quot;minio4.ujstor.com&quot;
+        ip_address: &quot;10.0.4.5&quot;
+</code></pre>
+<p>Next, navigate to the SSL directory and create a certificate with this command:</p>
+<pre><code class="language-bash">sudo ./certgen-linux-amd64 -host &quot;10.0.4.2, 10.0.4.3, 10.0.4.4, 10.0.4.5, minio1.ujstor.com, minio2.ujstor.com, minio3.ujstor.com, minio4.ujstor.com&quot; &amp;&amp; sudo chmod 644 private.key
+</code></pre>
+<h4 id="c-configure-nginx-lb"><strong>c) Configure Nginx lb</strong></h4>
+<p>Nginx variables are pretty straightforward. You need private IPs from servers, ports for console and API defined in the MinIO playbook, and domains that you will register with your DNS provider.</p>
+<pre><code class="language-bash">  vars:
+    minio_servers:
+      - 10.0.4.2
+      - 10.0.4.3
+      - 10.0.4.4
+      - 10.0.4.5
+    minio_port: 9091
+    console_port: 9092
+    console_domain: minio-console.ujstor.com
+    minio_domain: minio.ujstor.com
+</code></pre>
+<p>When the playbook is applied, we will create certificates for secure SSL connections using <a href="https://certbot.eff.org/instructions?ws=nginx&amp;os=ubuntufocal">Certbot</a> for the chosen domains.</p>
+<hr />
+<h2 id="3-run-playbooks">3. Run playbooks</h2>
+<p>MinIO:</p>
+<pre><code class="language-bash">cd ansible
+ansible-playbook playbooks/playbook_minio.yml
+</code></pre>
+<p>Expected output:</p>
+<pre><code class="language-bash">PLAY RECAP ********************************************************************************************************
+128.140.0.112              : ok=46   changed=29   unreachable=0    failed=0    skipped=3    rescued=0    ignored=3
+135.181.88.205             : ok=46   changed=29   unreachable=0    failed=0    skipped=3    rescued=0    ignored=3
+49.13.73.3                 : ok=51   changed=31   unreachable=0    failed=0    skipped=7    rescued=0    ignored=3
+91.107.208.20              : ok=46   changed=29   unreachable=0    failed=0    skipped=3    rescued=0    ignored=3
+</code></pre>
+<p>Nginx:</p>
+<pre><code class="language-bash">ansible-playbook playbooks/playbook_nginx_minio_lb.yml
+</code></pre>
+<p>Expected output:</p>
+<pre><code class="language-bash">PLAY RECAP *******************************************************************************************************
+49.13.86.88                : ok=29   changed=18   unreachable=0    failed=0    skipped=9    rescued=0    ignored=0
+</code></pre>
+<p>Complete terminal output is available in the <a href="/public/">public</a> directory.</p>
+<hr />
+<h2 id="4-ssh-into-lb-and-configure-ssl">4. SSH into LB and configure ssl</h2>
+<p>Terraform creates SSH private and public keys that are added to Hetzner and servers. They are also used by Ansible. Be careful with keys, you don't want to lose them.</p>
+<p>SSH into LB with the following command:</p>
+<pre><code class="language-shell">ssh root@49.13.86.88 -i ~/.ssh/minio_hetzner_key.pem
+</code></pre>
+<p>Install snap and create cert:</p>
+<pre><code class="language-bash">apt install snapd
+snap install --classic certbot
+certbot --nginx
+</code></pre>
+<hr />
+<h2 id="5-open-ui-and-test-s3-compatable-api">5. Open UI and test S3 compatable API</h2>
+<p>MinIO UI is now available at https://minio-console.ujstor.com. Once you configure buckets and permissions, test the API on https://minio.ujstor.com.</p>
+<h4 id="debugging">Debugging</h4>
+<p>If there is an issue, you cant access the UI, SSH into one of the servers, and check the logs and systemctl status of the MinIO service</p>
+<pre><code class="language-bash">systemctl status minio.service
+cat /var/log/syslog
+</code></pre>
+<p>If you see something like this, there is a high chance that volume permissions are not set correctly or there was a problem with the volume rename:</p>
+<pre><code class="language-bash">root@minio-2:~# systemctl status minio.service
+● minio.service - MinIO
+     Loaded: loaded (/etc/systemd/system/minio.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Thu 2024-03-14 22:13:37 UTC; 21min ago
+       Docs: https://docs.min.io
+    Process: 1062 ExecStartPre=/bin/bash -c if [ -z &quot;${MINIO_VOLUMES}&quot; ]; then echo &quot;Variable MINIO_VOLUMES not set in /etc/minio/minio.conf&quot;; exit 1; fi (code=exited, status=0/SUCCESS)
+    Process: 1063 ExecStart=/usr/local/bin/minio server $MINIO_OPTS $MINIO_VOLUMES (code=exited, status=1/FAILURE)
+   Main PID: 1063 (code=exited, status=1/FAILURE)
+
+Mar 14 22:13:37 minio-2 systemd[1]: minio.service: Scheduled restart job, restart counter is at 5.
+Mar 14 22:13:37 minio-2 systemd[1]: Stopped MinIO.
+Mar 14 22:13:37 minio-2 systemd[1]: minio.service: Start request repeated too quickly.
+Mar 14 22:13:37 minio-2 systemd[1]: minio.service: Failed with result 'exit-code'.
+Mar 14 22:13:37 minio-2 systemd[1]: Failed to start MinIO.
+</code></pre>
+<p>Check /mnt/ to see if there are volumes named disk1-4. If they are present, run the MinIO playbook again from the 'Change ownership for /mnt/disk' task:</p>
+<pre><code class="language-bash">ansible-playbook playbooks/playbook_minio.yml --start-at-task=&quot;Change ownership for /mnt/disk&quot;
+</code></pre>
+<p>This command can be executed manually on every node if you SSH into them:</p>
+<pre><code class="language-bash">chown -R minio:minio /mnt/disk{1,2,3,4}
+</code></pre>
+<p>Other common things that can go wrong is DNS resolving, so check /etc/hosts to see if dns_mapping is correst:</p>
+<pre><code class="language-bash">cat /etc/hosts
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">cat /etc/hosts
+# Your system has configured 'manage_etc_hosts' as True.
+# As a result, if you wish for changes to this file to persist
+# then you will need to either
+# a.) make changes to the master file in /etc/cloud/templates/hosts.debian.tmpl
+# b.) change or remove the value of 'manage_etc_hosts' in
+#     /etc/cloud/cloud.cfg or cloud-config from user-data
+#
+127.0.1.1 minio-2 minio-2
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+10.0.4.2 minio1.ujstor.com
+10.0.4.3 minio2.ujstor.com
+10.0.4.4 minio3.ujstor.com
+10.0.4.5 minio4.ujstor.com
+</code></pre>
+<p>Let's assume that everything is working fine. You now have a login UI. Use the username and password defined in the Minio playbook. Congratulations! Your personal S3-compatible storage is up and running, ready to use.</p>
+<p align="center">
+  <img src="../../public/02_ui.png" width="900" alt="Infrastructure Diagram">
+</p>
+
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Ujstor
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/ujstor" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.expand", "toc.flow", "navigation.top"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.bd41221c.min.js"></script>
+      
+    
+  </body>
+</html>
