@@ -1,3 +1,7 @@
+---
+hide:
+  - toc
+---
 ##  Deployment Cluster with S3 and psql
 
 ![infra](./public/01_infra-diagram.png)

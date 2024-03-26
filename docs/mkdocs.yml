@@ -5,11 +5,27 @@ site_description: Official documentation for Deployment Cluste
 site_url: https://ujstor.github.io/deployment-cluster-s3-db/
 
 repo_url: https://github.com/Ujstor/deployment-cluster-s3-db
-edit_uri: edit/master/docs/docs
 
 ### Build settings ###
 
-theme: readthedocs
+theme:
+  name: material
+  custom_dir: custom_theme/
+  theme:
+  features:
+    - navigation.instant
+    - navigation.expand
+    - toc.flow
+    - navigation.top
+  palette: 
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
 nav:
   - Home: index.md
   - Create infrastructure: create_infrastructure.md
@@ -25,7 +41,11 @@ nav:
      - Coolify: terminal/coolify_ansible.md
      - MinIO: terminal/minio_ansible.md
      - Psql: terminal/db_ansible.md
-     - Nginx MinIO: terminal/nginx_minio.md
 
-
-    
+extra:
+    social:
+      - icon: fontawesome/brands/github
+        link: https://github.com/ujstor
+        name: GitHub
+    generator: false
+copyright: Copyright &copy; 2024 Ujstor

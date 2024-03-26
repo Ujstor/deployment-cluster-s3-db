@@ -1,6 +1,3 @@
-## PostgreSQL
-
-
 ## Example Playbook
 
 ```yml

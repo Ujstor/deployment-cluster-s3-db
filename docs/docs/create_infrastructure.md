@@ -1,5 +1,3 @@
-## Create infrastructure
-
 Creating and configuring infrastructure processes depends on the resources you choose, and it will be explained in the playbook section
 
 ## Prerequisites

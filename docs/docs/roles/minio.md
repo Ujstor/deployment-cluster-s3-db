@@ -1,5 +1,3 @@
-## MinIO
-
 Available variables are listed below along with default values (see `defaults\main.yaml`)
 
 - Wheter to install or not minio server and minio client
